@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紫微易学 · tailaicai.com</title>
+<meta name="description" content="紫微斗数命盘在线排盘，基于倪海夏推演法，结合易经五行解析。">
+<style>
+/* ── Reset & Base ────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#080806;color:#c8b870;font-family:'华文仿宋','宋体',Georgia,serif;min-height:100vh;line-height:1.6}
+
+/* ── Header ──────────────────────────────────────── */
+header{background:linear-gradient(180deg,#0d0b00 0%,#080806 100%);border-bottom:1px solid #2a2200;padding:0 16px;position:sticky;top:0;z-index:50}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 0}
+.site-logo{font-size:1.4rem;color:#f0d060;letter-spacing:.1em;white-space:nowrap;text-decoration:none;flex-shrink:0}
+.site-logo span{opacity:.6;font-size:.9rem;margin-left:4px}
+
+/* ── Tabs ────────────────────────────────────────── */
+nav{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 0}
+nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid #2a2200;background:transparent;color:#888;cursor:pointer;font-family:inherit;font-size:.82rem;letter-spacing:.05em;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:#d4af37;border-color:#5a4a10}
+.tab-btn.active{color:#f0d060;border-color:#8b6914;background:linear-gradient(135deg,#1a1000,#2a1800)}
+.tab-btn.featured{border-color:#d4af37;color:#f0d060;background:linear-gradient(135deg,#2a1800,#5a3a00);box-shadow:0 0 12px rgba(212,175,55,.25)}
+.tab-btn.featured.active{box-shadow:0 0 20px rgba(212,175,55,.4)}
+
+/* ── Content Panels ──────────────────────────────── */
+.tab-panel{display:none;padding:20px 16px;max-width:900px;margin:0 auto}
+.tab-panel.active{display:block}
+
+/* ── 紫微命盘 specific styles (scoped) ───────────── */
+.form-box{max-width:560px;margin:0 auto 24px;background:#111;border:1px solid #3a3010;border-radius:8px;padding:20px}
+.form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;align-items:center}
+.form-row label{flex:0 0 72px;font-size:.82rem;color:#aaa}
+.form-row select,.form-row input{flex:1;background:#1a1a1a;color:#d4af37;border:1px solid #3a3010;border-radius:4px;padding:6px 8px;font-family:inherit;font-size:.88rem;min-width:80px}
+.gen-btn{display:block;width:100%;margin-top:14px;padding:11px;background:linear-gradient(135deg,#5a3a00,#8b6914);color:#f0d060;border:1px solid #d4af37;border-radius:6px;font-size:1rem;letter-spacing:.25em;cursor:pointer;font-family:inherit;transition:background .2s}
+.gen-btn:hover{background:linear-gradient(135deg,#7a5200,#a88020)}
+.fn{font-size:.7rem;color:#555;margin-top:6px;text-align:center}
+
+#chart-wrap{max-width:760px;margin:0 auto 20px;display:none}
+.chart-title{text-align:center;font-size:.85rem;color:#888;margin-bottom:10px;letter-spacing:.12em}
+.chart{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,auto);gap:3px;background:#1a1000;border:1px solid #3a3010;border-radius:6px;padding:3px}
+.cell{background:#0f0c00;border:1px solid #221800;border-radius:3px;padding:5px 4px;min-height:110px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.cell:hover{border-color:#8b6914}
+.cell.ming{border-color:#d4af37;background:#150f00}
+.cell-center{grid-column:2/4;grid-row:2/4;background:#090700;border:1px solid #221800;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.pname{font-size:.7rem;color:#777;display:block}
+.pname.ml{color:#d4af37;font-weight:bold}
+.gz{font-size:.65rem;color:#555;float:right}
+.shen-mk{position:absolute;top:3px;right:22px;font-size:.65rem;color:#a0a020}
+.stars{margin-top:3px;line-height:1.5}
+.s{display:inline-block;font-size:.8rem;color:#d4af37;white-space:nowrap}
+.s.zw{color:#c084fc}.s.tf{color:#f9a825}.s.ax{color:#5a9a5a;font-size:.7rem}
+.hua{display:inline-block;font-size:.62rem;padding:0 2px;border-radius:2px;margin:1px;vertical-align:top}
+.hl{background:#1a4a1a;color:#6fcf6f}.hq{background:#4a3a00;color:#f0c040}
+.hk{background:#1a2a4a;color:#60a0f0}.hj{background:#4a0a0a;color:#f06060}
+.dx{position:absolute;bottom:2px;right:3px;font-size:.6rem;color:#444}
+.cn{font-size:1rem;letter-spacing:.08em;color:#f0d060;margin-bottom:6px}
+.cr{font-size:.72rem;color:#999;margin:2px 0}.cr span{color:#d4af37}
+.jb{display:inline-block;margin-top:6px;padding:2px 10px;border:1px solid;border-radius:12px;font-size:.72rem}
+.jb.j2{border-color:#60a0ff;color:#60a0ff}.jb.j3{border-color:#60c060;color:#60c060}
+.jb.j4{border-color:#f0c040;color:#f0c040}.jb.j5{border-color:#e08040;color:#e08040}.jb.j6{border-color:#f06060;color:#f06060}
+
+#interp{max-width:760px;margin:0 auto;display:none}
+.isec{background:#0d0a00;border:1px solid #221800;border-radius:8px;padding:14px;margin-bottom:10px}
+.isec h3{color:#f0d060;font-size:.9rem;letter-spacing:.08em;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #221800}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.igrid{grid-template-columns:1fr}}
+.iitem{background:#080600;border:1px solid #1a1500;border-radius:5px;padding:10px}
+.iitem h4{font-size:.8rem;color:#d4af37;margin-bottom:5px}
+.iitem p{font-size:.76rem;color:#999;line-height:1.65}
+.ybox{background:#030803;border:1px solid #1a3a1a;border-radius:5px;padding:8px;margin-top:7px}
+.ybox .yg{font-size:1.4rem;margin-right:6px;vertical-align:middle}
+.ybox .yt{font-size:.78rem;color:#70b870;line-height:1.6;vertical-align:middle}
+.qt{font-size:.76rem;color:#7a6a30;border-left:2px solid #4a3a18;padding-left:7px;margin-top:7px;font-style:italic}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99}
+#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;border:1px solid #5a4a1a;border-radius:10px;padding:20px;max-width:380px;width:92%;z-index:100;max-height:82vh;overflow-y:auto}
+#popup h3{color:#f0d060;margin-bottom:10px;font-size:.95rem}
+#popup p{font-size:.8rem;color:#aaa;line-height:1.7;margin-bottom:7px}
+.xbtn{float:right;cursor:pointer;color:#777;font-size:1.1rem;line-height:1}
+
+/* ── Knowledge tabs shared styles ───────────────── */
+.art-wrap{max-width:720px;margin:0 auto}
+.art-hero{text-align:center;padding:24px 0 20px;border-bottom:1px solid #2a2200;margin-bottom:28px}
+.art-hero .gua-big{font-size:3rem;display:block;margin-bottom:8px;opacity:.8}
+.art-hero h2{font-size:1.3rem;color:#f0d060;letter-spacing:.15em;margin-bottom:6px}
+.art-hero p{font-size:.85rem;color:#888}
+.art-section{margin-bottom:28px}
+.art-section h3{font-size:1rem;color:#d4af37;letter-spacing:.1em;margin-bottom:12px;padding-left:10px;border-left:3px solid #8b6914}
+.art-section p{font-size:.85rem;color:#aaa;line-height:1.75;margin-bottom:10px}
+.art-section ul{padding-left:18px;margin-bottom:10px}
+.art-section li{font-size:.85rem;color:#aaa;line-height:1.75;margin-bottom:3px}
+.art-section strong{color:#d4af37}
+.art-section blockquote{border-left:2px solid #4a3a18;padding-left:10px;margin:10px 0;color:#8a7a3a;font-style:italic;font-size:.83rem}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem}
+.tbl th{background:#1a1500;color:#d4af37;padding:6px 10px;text-align:left;border:1px solid #2a2200;font-weight:normal;letter-spacing:.05em}
+.tbl td{padding:6px 10px;border:1px solid #1a1500;color:#aaa}
+.tbl tr:hover td{background:#0f0c00}
+.tbl .gua-sym{font-size:1.1rem;color:#c084fc}
+.tbl .num{color:#777;font-size:.75rem}
+
+/* 64卦 grid */
+.gua-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:12px 0}
+.gua-card{background:#0d0a00;border:1px solid #1a1500;border-radius:5px;padding:8px 10px;cursor:pointer;transition:border-color .15s}
+.gua-card:hover{border-color:#5a4a18}
+.gua-card .gnum{font-size:.65rem;color:#555}
+.gua-card .gname{font-size:.9rem;color:#d4af37;margin:2px 0}
+.gua-card .gmean{font-size:.72rem;color:#888}
+.gua-card .gmsg{font-size:.72rem;color:#7a9a7a;margin-top:4px;display:none}
+.gua-card.open .gmsg{display:block}
+.gua-card.open{border-color:#5a7a5a;background:#070d07}
+.cat-label{font-size:.78rem;color:#7a6a3a;margin:16px 0 6px;padding-left:4px;letter-spacing:.05em}
+
+/* 八卦 visual */
+.bagua-row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.bagua-item{flex:1 1 100px;background:#0d0a00;border:1px solid #1a1500;border-radius:5px;padding:10px;text-align:center}
+.bagua-item .sym{font-size:1.8rem;display:block;margin-bottom:4px}
+.bagua-item .bname{font-size:.82rem;color:#d4af37}
+.bagua-item .bdesc{font-size:.72rem;color:#888;margin-top:3px}
+
+/* wuxing cycle */
+.wx-cycle{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:10px 0;font-size:.82rem}
+.wx-item{padding:4px 12px;border-radius:16px;border:1px solid}
+.wx-mu{border-color:#3a6a3a;color:#6a9a6a;background:#071007}
+.wx-huo{border-color:#6a2a2a;color:#c07070;background:#110707}
+.wx-tu{border-color:#6a5a2a;color:#c0a060;background:#110d07}
+.wx-jin{border-color:#5a5a3a;color:#b0b060;background:#0d0d07}
+.wx-shui{border-color:#2a4a6a;color:#6090b0;background:#070d11}
+.wx-arr{color:#555;font-size:.9rem}
+
+/* ganzhi table highlight */
+.tbl .yang{color:#f0a060}.tbl .yin{color:#a0c0f0}
+
+/* footer */
+footer{text-align:center;padding:32px 16px;color:#444;font-size:.75rem;border-top:1px solid #1a1500;margin-top:40px}
+footer a{color:#5a4a18;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <a class="site-logo" href="#">☯ 易学<span>tailaicai.com</span></a>
+    <nav id="main-nav">
+      <button class="tab-btn featured active" data-tab="ziwei">✦ 紫微命盘</button>
+      <button class="tab-btn" data-tab="yijing">易经导论</button>
+      <button class="tab-btn" data-tab="wuxing">五行八卦</button>
+      <button class="tab-btn" data-tab="ganzhi">天干地支</button>
+      <button class="tab-btn" data-tab="liushisi">六十四卦</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     TAB 1: 紫微命盘
+═════════════════════════════════════════════════ -->
+<div id="tab-ziwei" class="tab-panel active">
+  <div style="text-align:center;padding:20px 0 4px">
+    <div style="font-size:1.5rem;color:#f0d060;letter-spacing:.3em">紫微斗数命盘</div>
+    <div style="font-size:.8rem;color:#666;margin-top:4px;letter-spacing:.1em">倪海夏推演法 · 结合易经五行解析</div>
+  </div>
+
+  <div class="form-box">
+    <div class="form-row">
+      <label>出生年</label>
+      <input type="number" id="year" value="1990" min="1900" max="2030" style="max-width:88px">
+      <span style="font-size:.72rem;color:#555">阳历年（正月前出生者 -1）</span>
+    </div>
+    <div class="form-row">
+      <label>农历月</label>
+      <select id="month">
+        <option value="1">正月</option><option value="2">二月</option><option value="3">三月</option>
+        <option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
+        <option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
+        <option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
+      </select>
+      <label style="flex:0 0 56px">农历日</label>
+      <select id="day" style="max-width:88px"></select>
+    </div>
+    <div class="form-row">
+      <label>时辰</label>
+      <select id="hour">
+        <option value="0">子 23-01</option><option value="1">丑 01-03</option>
+        <option value="2">寅 03-05</option><option value="3">卯 05-07</option>
+        <option value="4">辰 07-09</option><option value="5">巳 09-11</option>
+        <option value="6">午 11-13</option><option value="7">未 13-15</option>
+        <option value="8">申 15-17</option><option value="9">酉 17-19</option>
+        <option value="10">戌 19-21</option><option value="11">亥 21-23</option>
+      </select>
+      <label style="flex:0 0 56px">性别</label>
+      <select id="gender"><option value="m">男</option><option value="f">女</option></select>
+    </div>
+    <button class="gen-btn" onclick="generate()">排 命 盘</button>
+    <p class="fn">※ 以农历生日为准，不确定可用万年历换算</p>
+  </div>
+
+  <div id="chart-wrap">
+    <div class="chart-title" id="chart-title"></div>
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <div id="interp">
+    <div class="isec"><h3>命宫解析 · 倪海夏论命法</h3><div id="ming-interp"></div></div>
+    <div class="isec"><h3>三方四正 · 财官迁命</h3><div class="igrid" id="sanfang-interp"></div></div>
+    <div class="isec"><h3>四化所在 · 命运着力点</h3><div class="igrid" id="sihua-interp"></div></div>
+    <div class="isec"><h3>易经启示 · 五行卦象</h3><div id="yijing-interp"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     TAB 2: 易经导论
+═════════════════════════════════════════════════ -->
+<div id="tab-yijing" class="tab-panel">
+<div class="art-wrap">
+  <div class="art-hero">
+    <span class="gua-big">☯</span>
+    <h2>易经核心思想</h2>
+    <p>《易经》的核心，不是占卜本身，而是对"变化"这件事的理解与应对。</p>
+  </div>
+
+  <div class="art-section">
+    <h3>一句话概括</h3>
+    <p>世界始终在变化，人的关键能力不是对抗变化，而是<strong>观察形势、把握时机、顺势调整自己</strong>。</p>
+  </div>
+
+  <div class="art-section">
+    <h3>七个核心观点</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+      <div class="iitem"><h4>1. 变易</h4><p>万事万物都在变化，没有绝对静止和永恒不变的状态。</p></div>
+      <div class="iitem"><h4>2. 阴阳</h4><p>任何事物都包含相反又相依的两面：刚与柔、进与退、盛与衰。</p></div>
+      <div class="iitem"><h4>3. 时位</h4><p>同样的做法，放在不同时间、位置下结果可能完全不同。判断事情要看"时"和"势"。</p></div>
+      <div class="iitem"><h4>4. 中正</h4><p>最好的状态通常不是极端，而是适度、平衡、守分寸。</p></div>
+      <div class="iitem"><h4>5. 顺势</h4><p>不是硬碰硬，而是顺着规律和局势调整行动，避免逆势而行。</p></div>
+      <div class="iitem"><h4>6. 修养</h4><p>《易经》强调外部局势变化的同时，强调心态、德行、判断需要不断修正。</p></div>
+      <div class="iitem"><h4>7. 趋吉避凶</h4><p>通过观察、预判和调整，减少风险，争取更好的结果。</p></div>
+    </div>
+  </div>
+
+  <div class="art-section">
+    <h3>关键词提炼</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <span class="wx-item wx-mu">变化</span>
+      <span class="wx-item wx-huo">阴阳</span>
+      <span class="wx-item wx-tu">时机</span>
+      <span class="wx-item wx-jin">平衡</span>
+      <span class="wx-item wx-shui">顺势</span>
+      <span class="wx-item wx-mu">修身</span>
+    </div>
+  </div>
+
+  <div class="art-section">
+    <h3>现代理解：动态决策思维</h3>
+    <p>如果用现代语言解释，《易经》更像一套"动态决策框架"：</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;text-align:center">
+      <div class="bagua-item"><span class="sym">👁</span><div class="bname">先看环境</div></div>
+      <div class="bagua-item"><span class="sym">🔗</span><div class="bname">再看关系</div></div>
+      <div class="bagua-item"><span class="sym">⏱</span><div class="bname">再看时机</div></div>
+      <div class="bagua-item"><span class="sym">⚡</span><div class="bname">决定行动</div></div>
+    </div>
+    <blockquote>真正重要的不是死守一个答案，而是根据变化持续调整。</blockquote>
+  </div>
+
+  <div class="art-section">
+    <h3>与紫微斗数的关联</h3>
+    <p>紫微斗数是易经思想的具体化应用：命盘呈现的是你所处的"时位"——你天生的性格底色（命宫）、此刻的运势阶段（大限流年），以及如何顺势而为。</p>
+    <p><strong>化忌不是坏运</strong>，是"执念"所在，对应易经的"坎卦"——习坎，有孚，维心亨。心正则险难可过。</p>
+    <p style="margin-top:8px;text-align:center"><button class="gen-btn" style="max-width:200px;display:inline-block" onclick="switchTab('ziwei')">→ 去排命盘</button></p>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     TAB 3: 五行八卦
+═════════════════════════════════════════════════ -->
+<div id="tab-wuxing" class="tab-panel">
+<div class="art-wrap">
+  <div class="art-hero">
+    <span class="gua-big">☰☷☳☴☲☵☶☱</span>
+    <h2>五行八卦</h2>
+    <p>信息编码（阴阳三层叠加）＋ 状态分类（不是物质，是运动模式）</p>
+  </div>
+
+  <div class="art-section">
+    <h3>第一性原理</h3>
+    <p>阴阳是最小单位（0和1），<strong>八卦是阴阳的三层叠加（2³=8）</strong>，五行是对万物运动状态的五种分类。</p>
+  </div>
+
+  <div class="art-section">
+    <h3>八卦：8种基本情境</h3>
+    <p style="color:#666;font-size:.78rem;margin-bottom:10px">一条线有阴（⚋）或阳（⚊）两种状态，三层叠加 = 2³ = 8 种组合。</p>
+    <div class="bagua-row">
+      <div class="bagua-item"><span class="sym">☰</span><div class="bname">乾 · 天</div><div class="bdesc">纯阳，刚健，极度主动</div></div>
+      <div class="bagua-item"><span class="sym">☷</span><div class="bname">坤 · 地</div><div class="bdesc">纯阴，柔顺，极度承载</div></div>
+      <div class="bagua-item"><span class="sym">☳</span><div class="bname">震 · 雷</div><div class="bdesc">阳动于下，启动冲劲</div></div>
+      <div class="bagua-item"><span class="sym">☶</span><div class="bname">艮 · 山</div><div class="bdesc">阳止于上，静止收敛</div></div>
+      <div class="bagua-item"><span class="sym">☲</span><div class="bname">离 · 火</div><div class="bdesc">阳外阴内，附着明亮</div></div>
+      <div class="bagua-item"><span class="sym">☵</span><div class="bname">坎 · 水</div><div class="bdesc">阴外阳内，陷入险境</div></div>
+      <div class="bagua-item"><span class="sym">☴</span><div class="bname">巽 · 风</div><div class="bdesc">阴伏于下，渗透顺从</div></div>
+      <div class="bagua-item"><span class="sym">☱</span><div class="bname">兑 · 泽</div><div class="bdesc">阴出于上，喜悦开口</div></div>
+    </div>
+    <blockquote>记忆口诀：乾三连，坤六断，震仰盂，艮覆碗，离中虚，坎中满，兑上缺，巽下断。</blockquote>
+  </div>
+
+  <div class="art-section">
+    <h3>五行：5种运动状态</h3>
+    <p style="color:#aaa;margin-bottom:10px">不是五种"物质"，而是五种<strong>运动模式</strong>——万物的状态都可以归入其中。</p>
+    <table class="tbl">
+      <tr><th>行</th><th>运动特征</th><th>对应现象</th><th>卦象</th><th>方位</th></tr>
+      <tr><td><span class="wx-item wx-mu" style="padding:2px 8px;border-radius:8px;font-size:.75rem">木</span></td><td>向上、生长、伸展</td><td>春天、生发、开始</td><td class="gua-sym">☳☴</td><td>东</td></tr>
+      <tr><td><span class="wx-item wx-huo" style="padding:2px 8px;border-radius:8px;font-size:.75rem">火</span></td><td>向外、扩散、炎热</td><td>夏天、旺盛、高峰</td><td class="gua-sym">☲</td><td>南</td></tr>
+      <tr><td><span class="wx-item wx-tu" style="padding:2px 8px;border-radius:8px;font-size:.75rem">土</span></td><td>平衡、转化、承载</td><td>过渡期、中转、稳定</td><td class="gua-sym">☷☶</td><td>中/东北</td></tr>
+      <tr><td><span class="wx-item wx-jin" style="padding:2px 8px;border-radius:8px;font-size:.75rem">金</span></td><td>向内、收缩、肃杀</td><td>秋天、收获、收敛</td><td class="gua-sym">☰☱</td><td>西/西北</td></tr>
+      <tr><td><span class="wx-item wx-shui" style="padding:2px 8px;border-radius:8px;font-size:.75rem">水</span></td><td>向下、流动、储藏</td><td>冬天、潜伏、蓄势</td><td class="gua-sym">☵</td><td>北</td></tr>
+    </table>
+  </div>
+
+  <div class="art-section">
+    <h3>相生：促进关系</h3>
+    <div class="wx-cycle">
+      <span class="wx-item wx-mu">木</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-huo">火</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-tu">土</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-jin">金</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-shui">水</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-mu">木</span>
+    </div>
+    <blockquote>木燃生火，火烬成土，土聚成金，金融成水，水滋养木。</blockquote>
+  </div>
+
+  <div class="art-section">
+    <h3>相克：制约关系</h3>
+    <div class="wx-cycle">
+      <span class="wx-item wx-mu">木</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-tu">土</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-shui">水</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-huo">火</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-jin">金</span><span class="wx-arr">→</span>
+      <span class="wx-item wx-mu">木</span>
+    </div>
+    <blockquote>木扎入土，土阻断水，水灭掉火，火熔化金，金砍断木。</blockquote>
+  </div>
+
+  <div class="art-section">
+    <h3>实用理解</h3>
+    <p>五行八卦本质是<strong>分类工具</strong>：遇到任何事物，先判断它处于哪种"状态"，再判断相邻状态是促进还是制约，从而预判下一步走向。</p>
+    <p>不是玄学，是朴素的<strong>系统论</strong>。</p>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     TAB 4: 天干地支
+═════════════════════════════════════════════════ -->
+<div id="tab-ganzhi" class="tab-panel">
+<div class="art-wrap">
+  <div class="art-hero">
+    <span class="gua-big" style="font-size:1.8rem;letter-spacing:.05em">甲乙丙丁戊</span>
+    <h2>天干地支</h2>
+    <p>时间坐标系：10×12=60，循环记录年月日时</p>
+  </div>
+
+  <div class="art-section">
+    <h3>第一性原理</h3>
+    <p>天干地支是古人发明的<strong>时间坐标系</strong>：用10个天干 × 12个地支，组合出60个不重复的计时单位，循环记录年、月、日、时。</p>
+  </div>
+
+  <div class="art-section">
+    <h3>十天干</h3>
+    <p style="color:#666;font-size:.78rem;margin-bottom:8px">代表天（阳面），描述气的盛衰节律。</p>
+    <table class="tbl">
+      <tr><th>#</th><th>干</th><th>阴阳</th><th>五行</th><th>含义</th></tr>
+      <tr><td class="num">1</td><td><strong class="yang">甲</strong></td><td>阳</td><td>木</td><td>破土萌芽，新生开始</td></tr>
+      <tr><td class="num">2</td><td><strong class="yin">乙</strong></td><td>阴</td><td>木</td><td>草木柔曲，缓慢生长</td></tr>
+      <tr><td class="num">3</td><td><strong class="yang">丙</strong></td><td>阳</td><td>火</td><td>烈日当空，旺盛炎热</td></tr>
+      <tr><td class="num">4</td><td><strong class="yin">丁</strong></td><td>阴</td><td>火</td><td>灯火微光，内敛稳定</td></tr>
+      <tr><td class="num">5</td><td><strong class="yang">戊</strong></td><td>阳</td><td>土</td><td>厚重大地，稳固承载</td></tr>
+      <tr><td class="num">6</td><td><strong class="yin">己</strong></td><td>阴</td><td>土</td><td>田园沃土，柔软滋养</td></tr>
+      <tr><td class="num">7</td><td><strong class="yang">庚</strong></td><td>阳</td><td>金</td><td>刚硬金属，变革肃杀</td></tr>
+      <tr><td class="num">8</td><td><strong class="yin">辛</strong></td><td>阴</td><td>金</td><td>精致珠宝，细腻收敛</td></tr>
+      <tr><td class="num">9</td><td><strong class="yang">壬</strong></td><td>阳</td><td>水</td><td>大江大海，浩荡流动</td></tr>
+      <tr><td class="num">10</td><td><strong class="yin">癸</strong></td><td>阴</td><td>水</td><td>雨露细水，滋润潜藏</td></tr>
+    </table>
+  </div>
+
+  <div class="art-section">
+    <h3>十二地支</h3>
+    <p style="color:#666;font-size:.78rem;margin-bottom:8px">代表地（阴面），对应12个月、12时辰、12生肖。</p>
+    <table class="tbl">
+      <tr><th>#</th><th>支</th><th>生肖</th><th>时辰</th><th>月份</th><th>五行</th></tr>
+      <tr><td class="num">1</td><td><strong>子</strong></td><td>🐭鼠</td><td>23-01时</td><td>11月</td><td>水</td></tr>
+      <tr><td class="num">2</td><td><strong>丑</strong></td><td>🐮牛</td><td>01-03时</td><td>12月</td><td>土</td></tr>
+      <tr><td class="num">3</td><td><strong>寅</strong></td><td>🐯虎</td><td>03-05时</td><td>1月</td><td>木</td></tr>
+      <tr><td class="num">4</td><td><strong>卯</strong></td><td>🐰兔</td><td>05-07时</td><td>2月</td><td>木</td></tr>
+      <tr><td class="num">5</td><td><strong>辰</strong></td><td>🐉龙</td><td>07-09时</td><td>3月</td><td>土</td></tr>
+      <tr><td class="num">6</td><td><strong>巳</strong></td><td>🐍蛇</td><td>09-11时</td><td>4月</td><td>火</td></tr>
+      <tr><td class="num">7</td><td><strong>午</strong></td><td>🐴马</td><td>11-13时</td><td>5月</td><td>火</td></tr>
+      <tr><td class="num">8</td><td><strong>未</strong></td><td>🐑羊</td><td>13-15时</td><td>6月</td><td>土</td></tr>
+      <tr><td class="num">9</td><td><strong>申</strong></td><td>🐵猴</td><td>15-17时</td><td>7月</td><td>金</td></tr>
+      <tr><td class="num">10</td><td><strong>酉</strong></td><td>🐓鸡</td><td>17-19时</td><td>8月</td><td>金</td></tr>
+      <tr><td class="num">11</td><td><strong>戌</strong></td><td>🐶狗</td><td>19-21时</td><td>9月</td><td>土</td></tr>
+      <tr><td class="num">12</td><td><strong>亥</strong></td><td>🐷猪</td><td>21-23时</td><td>10月</td><td>水</td></tr>
+    </table>
+  </div>
+
+  <div class="art-section">
+    <h3>六十甲子：组合逻辑</h3>
+    <p><strong>天干（10）× 地支（12）的最小公倍数 = 60</strong>，所以每60年（天）一个完整循环。</p>
+    <blockquote>组合规则：同为奇数配奇数（阳干配阳支），偶数配偶数（阴干配阴支）。</blockquote>
+    <p style="margin-top:8px;font-size:.8rem;color:#888">前12组：甲子→乙丑→丙寅→丁卯→戊辰→己巳→庚午→辛未→壬申→癸酉→甲戌→乙亥…</p>
+  </div>
+
+  <div class="art-section">
+    <h3>实用对照</h3>
+    <table class="tbl">
+      <tr><th>用途</th><th>说明</th></tr>
+      <tr><td>记年</td><td>2024年 = <strong>甲辰年</strong>（龙年）</td></tr>
+      <tr><td>记月</td><td>每年12个月对应12地支（寅月起正月）</td></tr>
+      <tr><td>记日</td><td>60天一循环，无限延续</td></tr>
+      <tr><td>记时</td><td>一天12时辰，每时辰2小时，子时起</td></tr>
+      <tr><td>紫微命盘</td><td>命宫 = 月份 + 时辰的地支组合推算</td></tr>
+    </table>
+    <blockquote>本质是多维时间标签，描述"现在处于什么节律阶段"，进而判断适合做什么、规避什么。</blockquote>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     TAB 5: 六十四卦
+═════════════════════════════════════════════════ -->
+<div id="tab-liushisi" class="tab-panel">
+<div class="art-wrap">
+  <div class="art-hero">
+    <span class="gua-big">64</span>
+    <h2>六十四卦图</h2>
+    <p>情境手册 — 8² = 64种人与环境的关系模式</p>
+  </div>
+
+  <div class="art-section">
+    <h3>第一性原理</h3>
+    <p>八卦（8种情境）两两相叠 = 8² = 64种变化情境。每一卦描述一种<strong>人与环境的关系状态</strong>，以及在这种状态下的应对智慧。</p>
+    <blockquote>上卦（外卦）= 外部环境、他人、结果<br>下卦（内卦）= 内部状态、自己、原因</blockquote>
+    <p>举例：乾上坤下 = 否卦（天地相背，不通）；坤上乾下 = 泰卦（地天相交，亨通）。</p>
+  </div>
+
+  <div class="art-section">
+    <h3>64卦速查（点击展开）</h3>
+    <p style="font-size:.75rem;color:#666;margin-bottom:12px">按人生场景分类，点击任意卦名查看详解。</p>
+    <div id="gua64-container"></div>
+  </div>
+
+  <div class="art-section">
+    <h3>底层逻辑</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="iitem"><h4>情境公式</h4><p>任何情境 = 上卦（外部）+ 下卦（内部）</p></div>
+      <div class="iitem"><h4>每卦含义</h4><p>当前状态 + 最佳应对方式</p></div>
+      <div class="iitem"><h4>爻变原理</h4><p>某一爻改变，卦变成另一卦——情境在流动，时刻变化。</p></div>
+      <div class="iitem"><h4>首尾相连</h4><p>未济（64）之后回到乾（1），循环无终止。</p></div>
+    </div>
+    <blockquote style="margin-top:12px">64卦不是64个答案，而是64种"你在哪里、该怎么做"的场景手册。</blockquote>
+  </div>
+</div>
+</div>
+
+<!-- ── Popup & Overlay ──────────────────────────── -->
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <span class="xbtn" onclick="closePopup()">✕</span>
+  <h3 id="popup-title"></h3>
+  <div id="popup-content"></div>
+</div>
+
+<footer>
+  <p>© tailaicai.com · 紫微易学</p>
+  <p style="margin-top:4px;color:#333">基于倪海夏紫微斗数推演法 · 结合易经第一性原理解析</p>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     SCRIPTS
+═════════════════════════════════════════════════ -->
+<script>
+// ── Tab switching ─────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelector('[data-tab="'+id+'"]').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('main-nav').addEventListener('click',e=>{
+  const btn=e.target.closest('.tab-btn');
+  if(btn) switchTab(btn.dataset.tab);
+});
+
+// ── Day options ────────────────────────────────────
+const dayS=document.getElementById('day');
+for(let i=1;i<=30;i++){const o=document.createElement('option');o.value=i;o.textContent=i+'日';dayS.appendChild(o);}
+dayS.value=15;
+
+// ── Core data ─────────────────────────────────────
+const TG=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const PN=['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
+const MS=['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军'];
+const ZG=[0,1,2,3,4,5],TFG=[6,7,8,9,10,11,12,13];
+
+// ── Calc functions ─────────────────────────────────
+function ygz(y){const o=(y-1984+600)%60;return{g:o%10,z:o%12};}
+const NJ=[4,6,3,5,4,6,2,5,4,3,2,5,6,3,2,4,6,3,5,4,6,2,5,4,3,2,5,6,3,2];
+function getNJ(g,z){for(let i=0;i<60;i++)if(i%10===g&&i%12===z)return NJ[Math.floor(i/2)];return 3;}
+function pg(yg,pz){return((yg%5)*2+2+pz-2+120)%10;}
+function mg(m,h){return(1+m-h+120)%12;}
+function sg(yz,h){return(yz+h)%12;}
+function zwp(d,j){return(j-d+360)%12;}
+function tfp(zw){return(1-zw+12)%12;}
+function msp(d,j){
+  const zw=zwp(d,j),tf=tfp(zw);
+  return[zw,(zw-1+12)%12,(zw-3+12)%12,(zw-4+12)%12,(zw-5+12)%12,(zw-8+12)%12,
+    tf,(tf+1)%12,(tf+2)%12,(tf+3)%12,(tf+4)%12,(tf+5)%12,(tf+6)%12,(tf+10)%12];
+}
+function aux(yg,yz,m){
+  const ky=[[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[6,2],[3,5],[3,5]];
+  const[k,y]=ky[yg];
+  return{k,y,c:(10-yz+12)%12,q:(4-yz+12)%12,z:(3+m)%12,r:(23-m)%12,l:[2,3,5,6,5,6,8,9,11,0][yg]};
+}
+const SH=[[5,13,3,2],[1,11,0,7],[4,1,99,5],[7,4,1,9],[8,7,99,1],[3,8,11,99],[2,3,7,4],[9,2,99,99],[11,0,99,3],[13,9,7,8]];
+const HN=['化禄','化权','化科','化忌'];
+const HC=['hl','hq','hk','hj'];
+
+// ── Generate chart ─────────────────────────────────
+function generate(){
+  const yr=parseInt(document.getElementById('year').value);
+  const mo=parseInt(document.getElementById('month').value);
+  const dy=parseInt(document.getElementById('day').value);
+  const hr=parseInt(document.getElementById('hour').value);
+  const gd=document.getElementById('gender').value;
+  const{g:yg,z:yz}=ygz(yr);
+  const mp=mg(mo,hr),sp=sg(yz,hr);
+  const mgn=pg(yg,mp),j=getNJ(mgn,mp);
+  const st=msp(dy,j),ax=aux(yg,yz,mo),sh=SH[yg];
+  const isY=yg%2===0,isM=gd==='m';
+  const fwd=(isY&&isM)||(!isY&&!isM);
+  const cells=[];
+  for(let p=0;p<12;p++){
+    const pi=(p-mp+12)%12,pgn=pg(yg,p);
+    const dxo=fwd?(p-mp+12)%12:(mp-p+12)%12,dxs=j+dxo*10;
+    const msi=MS.map((_,i)=>i).filter(i=>st[i]===p);
+    const axH=[];
+    if(ax.k===p)axH.push({n:'天魁',c:'ax'});if(ax.y===p)axH.push({n:'天钺',c:'ax'});
+    if(ax.c===p)axH.push({n:'文昌',c:'ax'});if(ax.q===p)axH.push({n:'文曲',c:'ax'});
+    if(ax.z===p)axH.push({n:'左辅',c:'ax'});if(ax.r===p)axH.push({n:'右弼',c:'ax'});
+    if(ax.l===p)axH.push({n:'禄存',c:'ax'});
+    const hH=[];
+    sh.forEach((si,hi)=>{if(si<14&&st[si]===p)hH.push({l:HN[hi],c:HC[hi],s:MS[si]});});
+    cells.push({p,pi,pgn,msi,msn:msi.map(i=>MS[i]),axH,hH,dxs,im:p===mp,is:p===sp});
+  }
+  drawChart(cells,mp,sp,yr,mo,dy,hr,gd,yg,yz,j,fwd);
+  drawInterp(cells,mp,yg,yz,j,st,sh);
+  document.getElementById('chart-title').textContent=
+    `${yr}年 农历${mo}月${dy}日 ${DZ[hr]}时 · ${gd==='m'?'男':'女'}命`;
+  document.getElementById('chart-wrap').style.display='block';
+  document.getElementById('interp').style.display='block';
+  document.getElementById('chart-wrap').scrollIntoView({behavior:'smooth'});
+}
+
+function drawChart(cells,mp,sp,yr,mo,dy,hr,gd,yg,yz,j,fwd){
+  const{g:yG,z:yZ}=ygz(yr);
+  const ch=document.getElementById('chart');ch.innerHTML='';
+  [5,6,7,8].forEach(p=>ch.appendChild(mkCell(cells[p])));
+  ch.appendChild(mkCell(cells[4]));
+  const cen=document.createElement('div');
+  cen.className='cell-center';cen.style.cssText='grid-column:2/4;grid-row:2/4';
+  cen.innerHTML=`<div class="cn">${TG[yg]}${DZ[yz]}年命</div>
+    <div class="cr">生年：<span>${TG[yG]}${DZ[yZ]}(${yr})</span></div>
+    <div class="cr">命宫：<span>${TG[cells[mp].pgn]}${DZ[mp]}</span></div>
+    <div class="cr">身宫：<span>${DZ[sp]}宫</span></div>
+    <div class="cr">大限：<span>${fwd?'顺':'逆'}布 ${j}岁起</span></div>
+    <div class="jb j${j}">${['','','水二局','木三局','金四局','土五局','火六局'][j]}</div>`;
+  ch.appendChild(cen);ch.appendChild(mkCell(cells[9]));
+  ch.appendChild(mkCell(cells[3]));ch.appendChild(mkCell(cells[10]));
+  [2,1,0,11].forEach(p=>ch.appendChild(mkCell(cells[p])));
+}
+function mkCell(c){
+  const d=document.createElement('div');
+  d.className='cell'+(c.im?' ming':'');
+  d.onclick=()=>showP(c);
+  let h=`<span class="pname${c.im?' ml':''}">${PN[c.pi]}</span><span class="gz">${TG[c.pgn]}${DZ[c.p]}</span>`;
+  if(c.is)h+=`<span class="shen-mk">身</span>`;
+  h+='<div class="stars">';
+  c.msi.forEach(i=>{h+=`<span class="s ${ZG.includes(i)?'zw':TFG.includes(i)?'tf':''}">${MS[i]}</span>`;});
+  c.hH.forEach(h2=>{h+=`<span class="hua ${h2.c}">${h2.l}</span>`;});
+  c.axH.forEach(a=>{h+=`<span class="s ax">${a.n}</span>`;});
+  h+=`</div><span class="dx">${c.dxs}-${c.dxs+9}岁</span>`;
+  d.innerHTML=h;return d;
+}
+
+// Popup
+function showP(c){
+  const pn=PN[c.pi];
+  document.getElementById('popup-title').textContent=`${pn} · ${TG[c.pgn]}${DZ[c.p]}`;
+  let h=`<p><strong>大限：</strong>${c.dxs}–${c.dxs+9}岁</p>`;
+  if(c.msn.length>0){
+    h+=`<p><strong>主星：</strong>${c.msn.join('、')}</p>`;
+    c.msi.forEach(i=>{h+=`<p style="margin-left:8px;color:#c0a040">▸ ${MS[i]}：${SI[MS[i]]||''}</p>`;});
+  }else{h+=`<p style="color:#666">空宫 — 参看对宫${DZ[(c.p+6)%12]}宫。</p>`;}
+  if(c.hH.length>0){h+=`<p><strong>四化：</strong>`;c.hH.forEach(x=>h+=`<span class="hua ${x.c}">${x.s}${x.l}</span> `);h+=`</p>`;}
+  if(c.axH.length>0){h+=`<p><strong>辅星：</strong>${c.axH.map(a=>a.n).join('、')}</p>`;}
+  h+=`<p style="margin-top:8px;padding-top:8px;border-top:1px solid #2a2000;font-size:.76rem;color:#7a7a5a">${PT[pn]||''}</p>`;
+  document.getElementById('popup-content').innerHTML=h;
+  document.getElementById('popup').style.display='block';
+  document.getElementById('overlay').style.display='block';
+}
+function closePopup(){
+  document.getElementById('popup').style.display='none';
+  document.getElementById('overlay').style.display='none';
+}
+
+// ── Interpretation data ───────────────────────────
+const SI={
+  '紫微':'帝星。有领导气质，自尊心强，贵气显露，善于统御，易有贵人相助。命宫坐紫微，倪师言：此人天生有架势，不甘居人下。',
+  '天机':'益寿星。聪明机智，思维活跃，善谋略，但多变不定。倪师：天机动则灵，静则滞，要在动中求变。',
+  '太阳':'官禄主。付出型人格，光明磊落，名声重于财。男命旺，女命主夫。',
+  '武曲':'财星。意志坚定，行动力强，重实干，有财运，但性格刚克，感情略显孤独。',
+  '天同':'福星。随和享乐，内心平和，喜安逸，有口福，但缺乏进取心。',
+  '廉贞':'囚星才艺星。多才，性刚，感情复杂，是非多，若化禄可化险为夷。',
+  '天府':'财库。稳重保守，积财能力强，有地位，处事圆融，主富不主贵。',
+  '太阴':'富星田宅主。柔顺内敛，富有同情心，女命尤佳，财从暗处来。',
+  '贪狼':'桃花星变化星。多才多艺，欲望强，社交好，善变，财来财去。',
+  '巨门':'是非星。口才极佳，善思辨，疑心重，宜从事靠嘴吃饭的职业。',
+  '天相':'印星。重情义，服务精神强，宜做幕僚辅佐，配合力强。',
+  '天梁':'荫星。清高正直，有贵人缘，善救助他人，主长寿。',
+  '七杀':'将星。魄力十足，行动果断，开创力强，但克己克人，孤独感重。',
+  '破军':'耗星开创星。破旧立新，勇于改变，创业型人格，感情多变。'
+};
+const PT={
+  '命宫':'命宫是一生人格底色与格局所在，看主星定基调，三方四正辅助判断。',
+  '兄弟':'看手足情分，也看平辈朋友关系，及个人财库来源之一。',
+  '夫妻':'看感情婚姻，也代表合伙关系。倪师：看夫妻宫要结合命宫一起看。',
+  '子女':'看子嗣缘分，也看部属下属，以及自我创造力的表现。',
+  '财帛':'看赚钱方式与财运起伏，是"来财"的象，并非存财。',
+  '疾厄':'看身体健康体质，也看处事抗压能力，倪师极重视此宫。',
+  '迁移':'看出外运，在外的人际与机遇，也代表人前的形象。',
+  '交友':'看朋友、下属、合作伙伴的质量与关系。',
+  '官禄':'看事业格局与职场运势，是发展的核心宫位之一。',
+  '田宅':'看不动产、家庭环境，也代表内心安全感的来源。',
+  '福德':'看内心享受、兴趣与精神生活，也代表前世因缘。',
+  '父母':'看与长辈、上司的关系，也看文书印信的吉凶。'
+};
+const SG={
+  '紫微':{g:'☰',n:'乾卦',m:'天行健，君子以自强不息。紫微坐命，格局如天，宜广纳百川，勿独断专行。'},
+  '天机':{g:'☴',n:'巽卦',m:'随风渗透，顺势而入。天机命者善谋，审时度势，方能以柔克刚。'},
+  '太阳':{g:'☲',n:'离卦',m:'明两作，离；大人以继明照四方。太阳命者如火，付出是天性，光明是使命。'},
+  '武曲':{g:'☱',n:'兑卦',m:'兑为泽，君子以朋友讲习。武曲命者重实干，刚中有柔，财聚财散皆自然。'},
+  '天同':{g:'☵',n:'坎卦',m:'习坎，有孚，维心亨。天同命者随遇而安，水善利万物而不争。'},
+  '廉贞':{g:'☳',n:'震卦',m:'洊雷，震；君子以恐惧修省。廉贞命者刚烈多变，震动之后当反躬自省。'},
+  '天府':{g:'☷',n:'坤卦',m:'地势坤，君子以厚德载物。天府命者如大地，稳固包容，积财蓄德。'},
+  '太阴':{g:'☵',n:'坎卦',m:'水善利万物而不争。太阴命者柔顺内敛，财从暗处积，德从忍中来。'},
+  '贪狼':{g:'☶',n:'艮卦',m:'兼山，艮；君子以思不出其位。贪狼命者欲望旺，知止而后有定。'},
+  '巨门':{g:'☱',n:'兑卦',m:'说以先民，民忘其劳。巨门命者善言，宜以正道出口，避免口舌是非。'},
+  '天相':{g:'☴',n:'巽卦',m:'重巽以申命，刚巽乎中正而志行。天相命者宜辅佐，顺势配合方得其用。'},
+  '天梁':{g:'☶',n:'艮卦',m:'艮其背，不获其身。天梁命者厚重清高，止于所当止，乃真智慧。'},
+  '七杀':{g:'☳',n:'震卦',m:'震来虩虩，笑言哑哑。七杀命者果断勇猛，震后须镇定，以魄力驾驭方向。'},
+  '破军':{g:'☰',n:'乾卦',m:'潜龙勿用→见龙在田→飞龙在天。破军命者破旧立新，如龙之变化，勇于蜕变。'}
+};
+const JM={2:'水二局：命主聪慧灵动，宜从事需要应变能力的职业，早年较辛苦，逢水运发达。',
+  3:'木三局：命主善生发，事业有规划性，贵人运好，中年以后格局渐显。',
+  4:'金四局：命主坚毅务实，财运稳健，适合金融、建筑、制造业。',
+  5:'土五局：命主厚重耐劳，稳打稳扎，房地产、农业、传统行业吉。',
+  6:'火六局：命主热情进取，容易得名，事业起伏较大，须注意过于冒进。'};
+const JN={2:'水二局',3:'木三局',4:'金四局',5:'土五局',6:'火六局'};
+
+function drawInterp(cells,mp,yg,yz,j,st,sh){
+  const mc=cells[mp],ms=mc.msn,ps=ms[0]||'空宫';
+  let mh='';
+  if(ms.length===0){
+    const op=cells[(mp+6)%12];
+    mh=`<div class="iitem"><h4>命宫空宫</h4><p>命宫无主星，参看对宫<strong>${DZ[(mp+6)%12]}宫</strong>：${op.msn.join('、')||'亦无星'}。倪师言：空宫不空，对宫飞化入则有影响。</p></div>`;
+  } else {
+    ms.forEach(s=>{
+      const gua=SG[s];
+      mh+=`<div class="iitem"><h4>${s}坐命</h4><p>${SI[s]||''}</p>`;
+      if(gua) mh+=`<div class="ybox"><span class="yg">${gua.g}</span><span class="yt"><strong>${gua.n}</strong><br>${gua.m}</span></div>`;
+      mh+=`</div>`;
+    });
+  }
+  mh+=`<div class="iitem"><h4>${JN[j]}</h4><p>${JM[j]||''}</p></div>`;
+  document.getElementById('ming-interp').innerHTML=`<div class="igrid">${mh}</div>`;
+
+  const sfIdx=[0,4,8,6],sfN=['命宫','财帛','官禄','迁移'];
+  let sfh='';
+  sfIdx.forEach((o,i)=>{
+    const c=cells[(mp+o)%12];
+    sfh+=`<div class="iitem"><h4>${sfN[i]}（${DZ[(mp+o)%12]}宫）</h4><p>主星：${c.msn.length?c.msn.join('、'):'空宫'}<br>`;
+    if(c.hH.length)sfh+=`四化：${c.hH.map(h=>`<span class="hua ${h.c}">${h.s}${h.l}</span>`).join('')}<br>`;
+    sfh+=`<span style="color:#6a5a30;font-size:.72rem">${PT[PN[c.pi]]||''}</span></p></div>`;
+  });
+  document.getElementById('sanfang-interp').innerHTML=sfh;
+
+  let shh='';
+  sh.forEach((si,hi)=>{
+    if(si>=14)return;
+    const sp2=st[si],pi=(sp2-mp+12)%12,pn=PN[pi];
+    shh+=`<div class="iitem"><h4>${MS[si]}${HN[hi]} · 入${pn}</h4>`;
+    shh+=`<p>${MS[si]}落于${DZ[sp2]}宫（${pn}）。${hi===0?'禄在此处，顺畅有益，宜发力经营。':hi===1?'权在此处，有主导权，可担大任。':hi===2?'科在此处，声誉好，有贵人。':'忌在此处，执念所在，卡关多费心力。倪师：忌不是坏，是最在意的地方。'}</p>`;
+    shh+=`<p class="qt">${PT[pn]||''}</p></div>`;
+  });
+  document.getElementById('sihua-interp').innerHTML=shh;
+
+  const wx=['','','水','木','金','土','火'][j];
+  const wm={水:'☵坎 — 柔顺处下，以不争而胜',木:'☴☳ — 生发向上，生机勃勃',金:'☰☱ — 刚决收敛，义利并重',土:'☷☶ — 厚重承载，稳中求进',火:'☲离 — 光明付出，文明化成'};
+  let yh=`<div class="iitem"><h4>五行局 · 卦象</h4><p>${JN[j]}对应${wx}行。${wm[wx]||''}<br><span style="color:#7a6a30;font-size:.75rem;margin-top:4px;display:block">易经核心：世界始终在变化，人的关键能力是观察形势、把握时机、顺势调整自己。</span></p></div>`;
+  const pg2=SG[ps];
+  if(pg2) yh+=`<div class="iitem"><h4>${ps} · ${pg2.n}</h4><div class="ybox"><span class="yg">${pg2.g}</span><span class="yt">${pg2.m}</span></div></div>`;
+  const ji=sh[3];
+  if(ji<14){const jp=PN[(st[ji]-mp+12)%12];yh+=`<div class="iitem"><h4>化忌 · 易经启示</h4><p>${MS[ji]}化忌落于<strong>${jp}</strong>。</p><p class="qt">忌非凶，是"执"。${jp}是你最在意的地方，也是成长的突破口。坎卦曰：习坎，有孚，维心亨。身处险难，心正则通。</p></div>`;}
+  document.getElementById('yijing-interp').innerHTML=`<div class="igrid">${yh}</div>`;
+}
+
+// ── 64 Hexagrams data & render ─────────────────────
+const G64=[
+  {cat:'开始与创生',list:[
+    {n:1,name:'乾',mean:'天',msg:'自强不息，持续行动'},
+    {n:2,name:'坤',mean:'地',msg:'厚德载物，柔顺承接'},
+    {n:3,name:'屯',mean:'初生之难',msg:'万事开头难，坚持不退'},
+    {n:4,name:'蒙',mean:'启蒙',msg:'不知道是正常的，求学问师'}
+  ]},
+  {cat:'等待与争讼',list:[
+    {n:5,name:'需',mean:'等待',msg:'时机未到，养精蓄锐'},
+    {n:6,name:'讼',mean:'争讼',msg:'有理也要半途而止，争到底两败'},
+    {n:7,name:'师',mean:'军队/领导',msg:'纪律是集体行动的根本'},
+    {n:8,name:'比',mean:'亲附',msg:'主动靠近，建立同盟'}
+  ]},
+  {cat:'蓄力与推进',list:[
+    {n:9,name:'小畜',mean:'小力蓄积',msg:'力量还小，先积累别冒进'},
+    {n:10,name:'履',mean:'踩踏/礼',msg:'在危险边缘行走，礼数是保护'},
+    {n:11,name:'泰',mean:'通泰',msg:'天地交融，大吉之时'},
+    {n:12,name:'否',mean:'阻塞',msg:'上下不通，保存实力'}
+  ]},
+  {cat:'关系与共处',list:[
+    {n:13,name:'同人',mean:'和同',msg:'找到志同道合的人'},
+    {n:14,name:'大有',mean:'大丰收',msg:'拥有很多时更需谨慎'},
+    {n:15,name:'谦',mean:'谦逊',msg:'唯一六爻全吉的卦，谦受益'},
+    {n:16,name:'豫',mean:'预备/喜悦',msg:'提前准备，顺势而动'}
+  ]},
+  {cat:'变革与跟随',list:[
+    {n:17,name:'随',mean:'跟随',msg:'顺应时势，不强求'},
+    {n:18,name:'蛊',mean:'腐败/整治',msg:'问题积累，需要从根整治'},
+    {n:19,name:'临',mean:'临近',msg:'时机来临，主动出击'},
+    {n:20,name:'观',mean:'观察',msg:'先看清楚，再行动'}
+  ]},
+  {cat:'磨砺与诚信',list:[
+    {n:21,name:'噬嗑',mean:'咬合',msg:'清除障碍，才能合拢'},
+    {n:22,name:'贲',mean:'文饰',msg:'内在实质更重要，装饰是次要'},
+    {n:23,name:'剥',mean:'剥落',msg:'小人得势，君子退守'},
+    {n:24,name:'复',mean:'回归',msg:'一阳复始，事物必有转机'},
+    {n:25,name:'无妄',mean:'不妄为',msg:'顺应天道，不乱作为'},
+    {n:26,name:'大畜',mean:'大力蓄积',msg:'积累到极致，蓄势待发'},
+    {n:27,name:'颐',mean:'养育',msg:'养身养心，谨慎口腹'},
+    {n:28,name:'大过',mean:'过度',msg:'重量超出承载，尽快行动'}
+  ]},
+  {cat:'险境与感应',list:[
+    {n:29,name:'坎',mean:'险陷',msg:'重重险难，心正则过'},
+    {n:30,name:'离',mean:'附丽',msg:'依附于正确的事物'},
+    {n:31,name:'咸',mean:'感应',msg:'无私感应，才能真正连接'},
+    {n:32,name:'恒',mean:'持久',msg:'长久之道在于不断变化中坚守核心'},
+    {n:33,name:'遁',mean:'退隐',msg:'战略性撤退，保存实力'},
+    {n:34,name:'大壮',mean:'大力壮盛',msg:'力量大时更需守正'}
+  ]},
+  {cat:'进退与损益',list:[
+    {n:35,name:'晋',mean:'进升',msg:'顺势上升，光明正大'},
+    {n:36,name:'明夷',mean:'光明受伤',msg:'乱世中隐藏锋芒'},
+    {n:37,name:'家人',mean:'家庭',msg:'内部关系正，外部才能稳'},
+    {n:38,name:'睽',mean:'乖违',msg:'小事可为，大事分歧时慎行'},
+    {n:39,name:'蹇',mean:'险阻',msg:'绕道而行，求助于人'},
+    {n:40,name:'解',mean:'解除',msg:'危机解除，及时清理残局'},
+    {n:41,name:'损',mean:'减损',msg:'减少以充实根本'},
+    {n:42,name:'益',mean:'增益',msg:'有余者给予不足者，人心归附'}
+  ]},
+  {cat:'决断与变革',list:[
+    {n:43,name:'夬',mean:'决断',msg:'排除小人，但要光明正大'},
+    {n:44,name:'姤',mean:'相遇',msg:'偶然相遇，警惕小事成大患'},
+    {n:45,name:'萃',mean:'聚集',msg:'聚拢人心，需要正确领导'},
+    {n:46,name:'升',mean:'上升',msg:'一步步向上，踏实积累'},
+    {n:47,name:'困',mean:'困境',msg:'君子困而不失其志'},
+    {n:48,name:'井',mean:'水井',msg:'滋养众人，本身不移动'},
+    {n:49,name:'革',mean:'革命',msg:'旧的已去，变革需顺天应人'},
+    {n:50,name:'鼎',mean:'鼎新',msg:'建立新秩序，取精去糟'}
+  ]},
+  {cat:'顺从与循环',list:[
+    {n:51,name:'震',mean:'雷震',msg:'突发震动，保持冷静不乱'},
+    {n:52,name:'艮',mean:'停止',msg:'知道何时停下，也是智慧'},
+    {n:53,name:'渐',mean:'渐进',msg:'按步骤推进，不可跳跃'},
+    {n:54,name:'归妹',mean:'嫁归',msg:'依附他人时，守本分'},
+    {n:55,name:'丰',mean:'丰盛',msg:'极盛之时，思考衰退'},
+    {n:56,name:'旅',mean:'旅行',msg:'在外谨慎，保持低调'},
+    {n:57,name:'巽',mean:'顺入',msg:'柔顺渗透，反复申令'},
+    {n:58,name:'兑',mean:'喜悦',msg:'真正的喜悦来自内心正直'},
+    {n:59,name:'涣',mean:'涣散',msg:'凝聚人心，化解对立'},
+    {n:60,name:'节',mean:'节制',msg:'适度才能长久'},
+    {n:61,name:'中孚',mean:'诚信',msg:'内心真诚，可感化一切'},
+    {n:62,name:'小过',mean:'小过',msg:'小事稍过无妨，大事须守正'},
+    {n:63,name:'既济',mean:'已成',msg:'事成之后，防止松懈'},
+    {n:64,name:'未济',mean:'未成',msg:'结束即开始，循环不止'}
+  ]}
+];
+
+function render64(){
+  const con=document.getElementById('gua64-container');
+  let h='';
+  G64.forEach(cat=>{
+    h+=`<div class="cat-label">▸ ${cat.cat}</div><div class="gua-grid">`;
+    cat.list.forEach(g=>{
+      h+=`<div class="gua-card" onclick="this.classList.toggle('open')">
+        <div class="gnum">${g.n}</div>
+        <div class="gname">${g.name}</div>
+        <div class="gmean">${g.mean}</div>
+        <div class="gmsg">💬 ${g.msg}</div>
+      </div>`;
+    });
+    h+='</div>';
+  });
+  con.innerHTML=h;
+}
+render64();
+</script>
+</body>
+</html>
