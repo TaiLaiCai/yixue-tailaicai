@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 · 六十四卦速查 Demo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090f;--bg2:#0d0e1a;
+  --s1:rgba(255,255,255,.03);--b1:rgba(180,190,240,.07);--b2:rgba(180,190,240,.14);
+  --t1:#dde0f0;--t2:#7880a8;--t3:#3e4062;
+  --accent:#9aabff;--gold:#c8a882;--r:12px;
+}
+body{background:var(--bg);color:var(--t1);
+  font-family:-apple-system,"Helvetica Neue","PingFang SC","Hiragino Sans GB",sans-serif;
+  font-size:16px;line-height:1.75;padding:44px 24px;max-width:860px;margin:0 auto}
+
+.page-hero{text-align:center;margin-bottom:44px}
+.page-hero .sym{font-size:2.8rem;display:block;color:var(--t3);margin-bottom:12px}
+.page-hero h1{font-size:1.5rem;font-weight:300;letter-spacing:.28em;margin-bottom:8px}
+.page-hero p{font-size:.88rem;color:var(--t2)}
+
+.art-section{margin-bottom:10px}
+.art-section p{font-size:.88rem;color:var(--t2);line-height:1.9;margin-bottom:10px}
+blockquote{border-left:2px solid var(--b2);padding-left:12px;margin:10px 0;color:var(--t3);font-style:italic;font-size:.88rem}
+
+/* Principle boxes */
+.principle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.pbox{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:16px}
+.pbox h4{font-size:.86rem;color:var(--gold);margin-bottom:6px;font-weight:400}
+.pbox p{font-size:.82rem;color:var(--t2);line-height:1.75;margin:0}
+
+/* 64 gua */
+.gua-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:9px;margin:10px 0}
+.gua-card{background:rgba(255,255,255,.02);border:1px solid var(--b1);border-radius:10px;
+  padding:14px 15px;cursor:pointer;transition:border-color .15s,background .15s}
+.gua-card:hover{border-color:var(--b2)}
+.gua-card.open{border-color:rgba(140,180,120,.3);background:rgba(140,180,120,.04)}
+.gua-card .gnum{font-size:.68rem;color:var(--t3)}
+.gua-card .gname{font-size:.96rem;color:var(--gold);margin:3px 0}
+.gua-card .gmean{font-size:.8rem;color:var(--t2)}
+.gua-card .gmsg{font-size:.8rem;color:rgba(140,180,140,.78);margin-top:8px;display:none;
+  border-top:1px solid var(--b1);padding-top:8px;line-height:1.72}
+.gua-card.open .gmsg{display:block}
+.cat-label{font-size:.84rem;color:var(--t3);margin:22px 0 8px;padding-left:6px;letter-spacing:.06em}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.tbl th{background:rgba(255,255,255,.03);color:var(--t2);padding:9px 12px;text-align:left;border:1px solid var(--b1);font-weight:400}
+.tbl td{padding:9px 12px;border:1px solid var(--b1);color:var(--t2)}
+</style>
+</head>
+<body>
+
+<div class="page-hero">
+  <span class="sym">64</span>
+  <h1>六十四卦速查</h1>
+  <p>情境手册：8² = 64 种人与环境的关系模式 · 点击卡片展开详解</p>
+</div>
+
+<div class="art-section">
+  <p>八卦（8种情境）两两相叠 = 8² = 64种变化情境。每一卦描述一种<strong style="color:var(--t1)">人与环境的关系状态</strong>，以及在这种状态下的应对智慧。</p>
+  <div class="principle-grid">
+    <div class="pbox"><h4>上卦（外卦）</h4><p>外部环境、他人、结果</p></div>
+    <div class="pbox"><h4>下卦（内卦）</h4><p>内部状态、自己、原因</p></div>
+    <div class="pbox"><h4>爻变原理</h4><p>某一爻改变，卦变成另一卦——情境在流动，时刻变化。</p></div>
+    <div class="pbox"><h4>首尾相连</h4><p>未济（64）之后回到乾（1），循环无终止。</p></div>
+  </div>
+  <blockquote>举例：乾上坤下 = 否卦（天地相背，不通）；坤上乾下 = 泰卦（地天相交，亨通）。</blockquote>
+</div>
+
+<div id="gua64-container"></div>
+
+<div style="margin-top:48px">
+  <div class="cat-label">▸ 八卦对照表</div>
+  <table class="tbl">
+    <tr><th>卦</th><th>符号</th><th>象</th><th>本质</th><th>五行</th></tr>
+    <tr><td>乾</td><td>☰</td><td>天</td><td>纯阳，刚健，极度主动</td><td>金</td></tr>
+    <tr><td>坤</td><td>☷</td><td>地</td><td>纯阴，柔顺，极度承载</td><td>土</td></tr>
+    <tr><td>震</td><td>☳</td><td>雷</td><td>阳动于下，启动、冲劲</td><td>木</td></tr>
+    <tr><td>艮</td><td>☶</td><td>山</td><td>阳止于上，静止、收敛</td><td>土</td></tr>
+    <tr><td>离</td><td>☲</td><td>火</td><td>阳在外阴在内，附着、明亮</td><td>火</td></tr>
+    <tr><td>坎</td><td>☵</td><td>水</td><td>阴在外阳在内，陷入、险境</td><td>水</td></tr>
+    <tr><td>巽</td><td>☴</td><td>风</td><td>阴伏于下，渗透、顺从</td><td>木</td></tr>
+    <tr><td>兑</td><td>☱</td><td>泽</td><td>阴出于上，喜悦、开口</td><td>金</td></tr>
+  </table>
+</div>
+
+<script>
+const G64=[
+  {cat:'开始与创生',list:[
+    {n:1,name:'乾',mean:'天',msg:'自强不息，持续行动'},
+    {n:2,name:'坤',mean:'地',msg:'厚德载物，柔顺承接'},
+    {n:3,name:'屯',mean:'初生之难',msg:'万事开头难，坚持不退'},
+    {n:4,name:'蒙',mean:'启蒙',msg:'不知道是正常的，求学问师'}
+  ]},
+  {cat:'等待与争讼',list:[
+    {n:5,name:'需',mean:'等待',msg:'时机未到，养精蓄锐'},
+    {n:6,name:'讼',mean:'争讼',msg:'有理也要半途而止，争到底两败'},
+    {n:7,name:'师',mean:'军队/领导',msg:'纪律是集体行动的根本'},
+    {n:8,name:'比',mean:'亲附',msg:'主动靠近，建立同盟'}
+  ]},
+  {cat:'蓄力与推进',list:[
+    {n:9,name:'小畜',mean:'小力蓄积',msg:'力量还小，先积累别冒进'},
+    {n:10,name:'履',mean:'踩踏/礼',msg:'在危险边缘行走，礼数是保护'},
+    {n:11,name:'泰',mean:'通泰',msg:'天地交融，大吉之时'},
+    {n:12,name:'否',mean:'阻塞',msg:'上下不通，保存实力'}
+  ]},
+  {cat:'关系与共处',list:[
+    {n:13,name:'同人',mean:'和同',msg:'找到志同道合的人'},
+    {n:14,name:'大有',mean:'大丰收',msg:'拥有很多时更需谨慎'},
+    {n:15,name:'谦',mean:'谦逊',msg:'唯一六爻全吉的卦，谦受益'},
+    {n:16,name:'豫',mean:'预备/喜悦',msg:'提前准备，顺势而动'}
+  ]},
+  {cat:'变革与跟随',list:[
+    {n:17,name:'随',mean:'跟随',msg:'顺应时势，不强求'},
+    {n:18,name:'蛊',mean:'腐败/整治',msg:'问题积累，需要从根整治'},
+    {n:19,name:'临',mean:'临近',msg:'时机来临，主动出击'},
+    {n:20,name:'观',mean:'观察',msg:'先看清楚，再行动'}
+  ]},
+  {cat:'磨砺与诚信',list:[
+    {n:21,name:'噬嗑',mean:'咬合',msg:'清除障碍，才能合拢'},
+    {n:22,name:'贲',mean:'文饰',msg:'内在实质更重要，装饰是次要'},
+    {n:23,name:'剥',mean:'剥落',msg:'小人得势，君子退守'},
+    {n:24,name:'复',mean:'回归',msg:'一阳复始，事物必有转机'},
+    {n:25,name:'无妄',mean:'不妄为',msg:'顺应天道，不乱作为'},
+    {n:26,name:'大畜',mean:'大力蓄积',msg:'积累到极致，蓄势待发'},
+    {n:27,name:'颐',mean:'养育',msg:'养身养心，谨慎口腹'},
+    {n:28,name:'大过',mean:'过度',msg:'重量超出承载，尽快行动'}
+  ]},
+  {cat:'险境与感应',list:[
+    {n:29,name:'坎',mean:'险陷',msg:'重重险难，心正则过'},
+    {n:30,name:'离',mean:'附丽',msg:'依附于正确的事物'},
+    {n:31,name:'咸',mean:'感应',msg:'无私感应，才能真正连接'},
+    {n:32,name:'恒',mean:'持久',msg:'长久之道在于不断变化中坚守核心'},
+    {n:33,name:'遁',mean:'退隐',msg:'战略性撤退，保存实力'},
+    {n:34,name:'大壮',mean:'大力壮盛',msg:'力量大时更需守正'}
+  ]},
+  {cat:'进退与损益',list:[
+    {n:35,name:'晋',mean:'进升',msg:'顺势上升，光明正大'},
+    {n:36,name:'明夷',mean:'光明受伤',msg:'乱世中隐藏锋芒'},
+    {n:37,name:'家人',mean:'家庭',msg:'内部关系正，外部才能稳'},
+    {n:38,name:'睽',mean:'乖违',msg:'小事可为，大事分歧时慎行'},
+    {n:39,name:'蹇',mean:'险阻',msg:'绕道而行，求助于人'},
+    {n:40,name:'解',mean:'解除',msg:'危机解除，及时清理残局'},
+    {n:41,name:'损',mean:'减损',msg:'减少以充实根本'},
+    {n:42,name:'益',mean:'增益',msg:'有余者给予不足者，人心归附'}
+  ]},
+  {cat:'决断与变革',list:[
+    {n:43,name:'夬',mean:'决断',msg:'排除小人，但要光明正大'},
+    {n:44,name:'姤',mean:'相遇',msg:'偶然相遇，警惕小事成大患'},
+    {n:45,name:'萃',mean:'聚集',msg:'聚拢人心，需要正确领导'},
+    {n:46,name:'升',mean:'上升',msg:'一步步向上，踏实积累'},
+    {n:47,name:'困',mean:'困境',msg:'君子困而不失其志'},
+    {n:48,name:'井',mean:'水井',msg:'滋养众人，本身不移动'},
+    {n:49,name:'革',mean:'革命',msg:'旧的已去，变革需顺天应人'},
+    {n:50,name:'鼎',mean:'鼎新',msg:'建立新秩序，取精去糟'}
+  ]},
+  {cat:'顺从与循环',list:[
+    {n:51,name:'震',mean:'雷震',msg:'突发震动，保持冷静不乱'},
+    {n:52,name:'艮',mean:'停止',msg:'知道何时停下，也是智慧'},
+    {n:53,name:'渐',mean:'渐进',msg:'按步骤推进，不可跳跃'},
+    {n:54,name:'归妹',mean:'嫁归',msg:'依附他人时，守本分'},
+    {n:55,name:'丰',mean:'丰盛',msg:'极盛之时，思考衰退'},
+    {n:56,name:'旅',mean:'旅行',msg:'在外谨慎，保持低调'},
+    {n:57,name:'巽',mean:'顺入',msg:'柔顺渗透，反复申令'},
+    {n:58,name:'兑',mean:'喜悦',msg:'真正的喜悦来自内心正直'},
+    {n:59,name:'涣',mean:'涣散',msg:'凝聚人心，化解对立'},
+    {n:60,name:'节',mean:'节制',msg:'适度才能长久'},
+    {n:61,name:'中孚',mean:'诚信',msg:'内心真诚，可感化一切'},
+    {n:62,name:'小过',mean:'小过',msg:'小事稍过无妨，大事须守正'},
+    {n:63,name:'既济',mean:'已成',msg:'事成之后，防止松懈'},
+    {n:64,name:'未济',mean:'未成',msg:'结束即开始，循环不止'}
+  ]}
+];
+
+(function render64(){
+  const con=document.getElementById('gua64-container');
+  let h='';
+  G64.forEach(cat=>{
+    h+=`<div class="cat-label">▸ ${cat.cat}</div><div class="gua-grid">`;
+    cat.list.forEach(g=>{
+      h+=`<div class="gua-card" onclick="this.classList.toggle('open')">
+        <div class="gnum">${g.n} · ${String.fromCodePoint(0x4DC0+g.n-1)}</div>
+        <div class="gname">${g.name}</div>
+        <div class="gmean">${g.mean}</div>
+        <div class="gmsg">↳ ${g.msg}</div>
+      </div>`;
+    });
+    h+='</div>';
+  });
+  con.innerHTML=h;
+})();
+</script>
+</body>
+</html>

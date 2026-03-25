@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 · 八卦开场动画 Demo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090f;--t1:#dde0f0;--t2:#7880a8;--t3:#3e4062;
+  --accent:#9aabff;--b1:rgba(180,190,240,.07);--b2:rgba(180,190,240,.14);
+}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,"Helvetica Neue","PingFang SC","Hiragino Sans GB",sans-serif;min-height:100vh;overflow:hidden}
+
+/* ── INTRO ── */
+#intro{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 40%,#0e1028 0%,#06070d 70%);
+  cursor:pointer;user-select:none;
+  transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
+}
+#intro.done{opacity:0;pointer-events:none;transform:scale(1.06)}
+#star-canvas{position:absolute;inset:0;pointer-events:none}
+
+#bagua-ring{position:relative;width:290px;height:290px;margin-bottom:52px;flex-shrink:0}
+#ring-track{
+  position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px;
+  border-radius:50%;border:1px solid rgba(160,170,230,.07);pointer-events:none;
+}
+#ring-track::before{
+  content:'';position:absolute;inset:36px;border-radius:50%;
+  border:1px dashed rgba(160,170,230,.04);
+}
+.gua-node{
+  position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px;
+  border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(154,171,255,.05);border:1px solid rgba(154,171,255,.15);
+  will-change:transform;transition:box-shadow .3s,border-color .3s;
+}
+.gua-node .gsym{font-size:1.45rem;line-height:1;color:rgba(200,210,255,.8)}
+.gua-node .gname{font-size:.38rem;color:rgba(154,171,255,.45);margin-top:1px;letter-spacing:.05em}
+.gua-node.lit{border-color:rgba(154,171,255,.5);box-shadow:0 0 18px rgba(154,171,255,.35)}
+.gua-node.lit .gsym{color:rgba(200,210,255,1)}
+
+#ring-center{
+  position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px;
+  display:flex;align-items:center;justify-content:center;
+}
+#taichi{
+  font-size:3rem;color:rgba(220,228,255,.55);display:inline-block;
+  filter:drop-shadow(0 0 14px rgba(154,171,255,.35));
+  transition:filter .4s,font-size .4s,opacity .5s;will-change:transform;
+}
+#intro.spin #taichi{filter:drop-shadow(0 0 28px rgba(154,171,255,.8))}
+
+#intro-text{text-align:center}
+#intro-logo{font-size:3rem;font-weight:200;letter-spacing:.38em;color:var(--t1);margin-bottom:10px;text-indent:.38em}
+#intro-sub{font-size:.85rem;letter-spacing:.3em;color:var(--t2);margin-bottom:40px;text-indent:.3em}
+#unlock-hint{font-size:.72rem;letter-spacing:.22em;color:var(--t3);animation:hint-blink 2.2s ease-in-out infinite;text-indent:.22em}
+@keyframes hint-blink{0%,100%{opacity:.3}50%{opacity:.9}}
+
+/* ── MAIN APP (shown after unlock) ── */
+#app{
+  opacity:0;transition:opacity .9s ease .15s;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;flex-direction:column;gap:16px;
+  padding:40px 20px;text-align:center;
+}
+#app.visible{opacity:1}
+#app h2{font-size:1.6rem;font-weight:200;letter-spacing:.3em;color:var(--t1)}
+#app p{font-size:.9rem;color:var(--t2);letter-spacing:.1em}
+.demo-note{
+  margin-top:24px;padding:16px 24px;
+  background:rgba(154,171,255,.05);border:1px solid var(--b1);border-radius:12px;
+  font-size:.82rem;color:var(--t3);max-width:420px;line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<div id="intro" onclick="startUnlock()">
+  <canvas id="star-canvas"></canvas>
+  <div id="bagua-ring">
+    <div id="ring-track"></div>
+    <div class="gua-node"><span class="gsym">☰</span><span class="gname">乾</span></div>
+    <div class="gua-node"><span class="gsym">☱</span><span class="gname">兑</span></div>
+    <div class="gua-node"><span class="gsym">☲</span><span class="gname">离</span></div>
+    <div class="gua-node"><span class="gsym">☳</span><span class="gname">震</span></div>
+    <div class="gua-node"><span class="gsym">☴</span><span class="gname">巽</span></div>
+    <div class="gua-node"><span class="gsym">☵</span><span class="gname">坎</span></div>
+    <div class="gua-node"><span class="gsym">☶</span><span class="gname">艮</span></div>
+    <div class="gua-node"><span class="gsym">☷</span><span class="gname">坤</span></div>
+    <div id="ring-center"><span id="taichi">☯</span></div>
+  </div>
+  <div id="intro-text">
+    <div id="intro-logo">易学泰来才</div>
+    <div id="intro-sub">紫微 · 易经 · 命运推演</div>
+    <div id="unlock-hint">── 点击任意处，解开命运之门 ──</div>
+  </div>
+</div>
+
+<div id="app">
+  <h2>✦ 主界面</h2>
+  <p>开场动画解锁后，此处显示你的内容</p>
+  <div class="demo-note">
+    这是 <strong>01-intro-screen</strong> 的独立演示。<br>
+    将 <code>#app</code> 内的内容替换为你自己的主界面即可。<br>
+    详见 <code>README.md</code>。
+  </div>
+</div>
+
+<script>
+/* ══ INTRO ANIMATION ══ */
+(function(){
+  const canvas = document.getElementById('star-canvas');
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<180;i++){
+      const x = Math.random()*canvas.width;
+      const y = Math.random()*canvas.height;
+      const r = Math.random()*1.1+0.2;
+      const a = Math.random()*0.55+0.15;
+      const hue = Math.random()>0.7 ? 220 : 240;
+      ctx.beginPath();
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fillStyle = `hsla(${hue},60%,85%,${a})`;
+      ctx.fill();
+    }
+  }
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  const nodes = document.querySelectorAll('.gua-node');
+  const taichi = document.getElementById('taichi');
+  let angle = -90, speed = 0.07, running = true, unlocking = false;
+  let litIdx = 0, litTimer = 0;
+
+  const symColors = [
+    'rgba(255,220,180,.9)','rgba(160,220,255,.9)','rgba(255,185,110,.9)',
+    'rgba(195,165,255,.9)','rgba(165,240,195,.9)','rgba(130,175,255,.9)',
+    'rgba(210,205,185,.9)','rgba(210,190,150,.9)',
+  ];
+  nodes.forEach((n,i)=>{ n.querySelector('.gsym').style.color = symColors[i]; });
+
+  function getR(){ return window.innerWidth < 480 ? 88 : 110; }
+
+  function tick(){
+    if(!running) return;
+    angle += speed;
+    const r = getR();
+    nodes.forEach((n,i)=>{
+      const a = (angle + i*45) * Math.PI/180;
+      n.style.transform = `translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px)`;
+    });
+    taichi.style.transform = `rotate(${angle*0.28}deg)`;
+    litTimer++;
+    if(litTimer > 70){
+      nodes[litIdx%8].classList.remove('lit');
+      litIdx++;
+      nodes[litIdx%8].classList.add('lit');
+      litTimer = 0;
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  window.startUnlock = function(){
+    if(unlocking) return;
+    unlocking = true;
+    const intro = document.getElementById('intro');
+    intro.classList.add('spin');
+    nodes.forEach(n=>n.classList.add('lit'));
+    let step = 0;
+    const accel = setInterval(()=>{
+      step++;
+      speed = 0.07 + step * 0.32;
+      if(step >= 9){
+        clearInterval(accel);
+        running = false;
+        nodes.forEach((n,i)=>{
+          const a = (angle + i*45) * Math.PI/180;
+          const far = getR()*3;
+          n.style.transition = 'transform .5s cubic-bezier(.4,0,1,1), opacity .4s .1s';
+          n.style.transform = `translate(${Math.cos(a)*far}px,${Math.sin(a)*far}px) scale(0)`;
+          n.style.opacity = '0';
+        });
+        taichi.style.transition = 'font-size .4s ease-in, opacity .5s .15s';
+        taichi.style.fontSize = '7rem';
+        taichi.style.opacity = '0';
+        setTimeout(()=>{
+          intro.classList.add('done');
+          document.getElementById('app').classList.add('visible');
+        }, 550);
+      }
+    }, 45);
+  };
+})();
+</script>
+</body>
+</html>

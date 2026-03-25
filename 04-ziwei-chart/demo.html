@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 · 紫微斗数命盘 Demo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090f;--s1:rgba(255,255,255,.03);--s2:rgba(255,255,255,.06);
+  --b1:rgba(180,190,240,.07);--b2:rgba(180,190,240,.14);
+  --t1:#dde0f0;--t2:#7880a8;--t3:#3e4062;
+  --accent:#9aabff;--accentd:rgba(154,171,255,.12);
+  --gold:#c8a882;--goldd:rgba(200,168,130,.12);--r:12px;
+}
+body{background:var(--bg);color:var(--t1);
+  font-family:-apple-system,"Helvetica Neue","PingFang SC","Hiragino Sans GB",sans-serif;
+  min-height:100vh;line-height:1.75;overflow-x:hidden;font-size:16px}
+.wrap{max-width:900px;margin:0 auto;padding:44px 24px}
+.form-title{text-align:center;margin-bottom:32px}
+.form-title h1{font-size:1.9rem;font-weight:200;letter-spacing:.32em;color:var(--t1);margin-bottom:8px}
+.form-title p{font-size:.88rem;color:var(--t3);letter-spacing:.14em}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:28px;max-width:540px;margin:0 auto 40px}
+.form-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.form-row label{flex:0 0 64px;font-size:.88rem;color:var(--t2);letter-spacing:.05em}
+.form-row select,.form-row input{
+  flex:1;background:rgba(255,255,255,.04);color:var(--t1);
+  border:1px solid var(--b1);border-radius:9px;padding:10px 14px;
+  font-family:inherit;font-size:.92rem;outline:none;transition:border-color .2s;min-width:70px}
+.form-row select:focus,.form-row input:focus{border-color:var(--accent)}
+.form-row select option{background:#0e0f1e}
+.gen-btn{width:100%;margin-top:22px;padding:15px;background:var(--goldd);color:var(--gold);
+  border:1px solid rgba(200,168,130,.28);border-radius:11px;font-size:1rem;letter-spacing:.4em;
+  cursor:pointer;font-family:inherit;transition:all .22s}
+.gen-btn:hover{background:rgba(200,168,130,.22);border-color:rgba(200,168,130,.5);box-shadow:0 4px 28px rgba(200,168,130,.14)}
+.form-note{text-align:center;font-size:.78rem;color:var(--t3);margin-top:10px}
+#chart-wrap{display:none;margin-bottom:24px}
+.chart-title{text-align:center;font-size:.9rem;color:var(--t2);margin-bottom:16px;letter-spacing:.16em}
+.chart{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,auto);
+  gap:3px;background:rgba(154,171,255,.04);border:1px solid var(--b1);border-radius:var(--r);padding:3px}
+.cell{background:rgba(9,9,15,.85);border:1px solid var(--b1);border-radius:8px;padding:9px;
+  min-height:118px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s,background .15s}
+.cell:hover{border-color:var(--b2);background:var(--s1)}
+.cell.ming{border-color:rgba(200,168,130,.38);background:rgba(200,168,130,.03)}
+.cell-center{grid-column:2/4;grid-row:2/4;background:rgba(7,7,14,.92);border:1px solid var(--b1);
+  border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+.pname{font-size:.74rem;color:var(--t3);display:block}.pname.ml{color:var(--gold);font-weight:500}
+.gz{font-size:.7rem;color:var(--t3);float:right}
+.shen-mk{position:absolute;top:4px;right:24px;font-size:.66rem;color:rgba(140,190,140,.6)}
+.stars{margin-top:5px;line-height:1.7}
+.s{display:inline-block;font-size:.84rem;color:var(--gold);white-space:nowrap}
+.s.zw{color:#c084fc}.s.tf{color:#88b8e8}.s.ax{color:var(--t3);font-size:.66rem}
+.hua{display:inline-block;font-size:.58rem;padding:1px 4px;border-radius:3px;margin:1px;vertical-align:top}
+.hl{background:rgba(80,180,80,.1);color:#70cc70;border:1px solid rgba(80,180,80,.2)}
+.hq{background:rgba(180,140,60,.1);color:#c89840;border:1px solid rgba(180,140,60,.2)}
+.hk{background:rgba(80,130,210,.1);color:#7298e0;border:1px solid rgba(80,130,210,.2)}
+.hj{background:rgba(210,70,70,.1);color:#d87070;border:1px solid rgba(210,70,70,.2)}
+.dx{position:absolute;bottom:4px;right:5px;font-size:.64rem;color:var(--t3)}
+.cn{font-size:1rem;letter-spacing:.1em;color:var(--t1);margin-bottom:10px}
+.cr{font-size:.78rem;color:var(--t2);margin:3px 0}.cr span{color:var(--gold)}
+.jb{display:inline-block;margin-top:10px;padding:3px 14px;border-radius:12px;font-size:.76rem;border:1px solid}
+.jb.j2{border-color:rgba(80,140,220,.35);color:#7898d8}.jb.j3{border-color:rgba(80,170,80,.35);color:#70c070}
+.jb.j4{border-color:rgba(190,150,70,.35);color:#c8a050}.jb.j5{border-color:rgba(170,130,70,.35);color:#b89050}
+.jb.j6{border-color:rgba(210,90,70,.35);color:#d07860}
+#interp{display:none;max-width:760px;margin:0 auto}
+.isec{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:24px;margin-bottom:14px}
+.isec h3{font-size:.95rem;color:var(--t1);letter-spacing:.12em;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--b1);font-weight:400}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.igrid{grid-template-columns:1fr}}
+.iitem{background:rgba(255,255,255,.02);border:1px solid var(--b1);border-radius:10px;padding:16px}
+.iitem h4{font-size:.86rem;color:var(--gold);margin-bottom:8px;font-weight:400}
+.iitem p{font-size:.84rem;color:var(--t2);line-height:1.82}
+.ybox{background:rgba(154,171,255,.04);border:1px solid var(--b1);border-radius:8px;padding:12px;margin-top:10px;display:flex;align-items:flex-start;gap:10px}
+.ybox .yg{font-size:1.6rem;flex-shrink:0;line-height:1.2}
+.ybox .yt{font-size:.84rem;color:rgba(154,171,255,.72);line-height:1.78}
+.qt{font-size:.82rem;color:var(--t3);border-left:2px solid var(--b2);padding-left:10px;margin-top:9px;font-style:italic}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(5px);z-index:99}
+#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0e0f1e;
+  border:1px solid var(--b2);border-radius:18px;padding:28px;max-width:420px;width:92%;z-index:100;max-height:84vh;overflow-y:auto}
+#popup h3{color:var(--t1);margin-bottom:14px;font-size:1rem;font-weight:400;letter-spacing:.08em}
+#popup p{font-size:.88rem;color:var(--t2);line-height:1.82;margin-bottom:10px}
+.xbtn{float:right;cursor:pointer;color:var(--t3);font-size:1.15rem;line-height:1;transition:color .2s}
+.xbtn:hover{color:var(--t2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="form-title">
+  <h1>紫微斗数</h1>
+  <p>倪海夏推演法 · 结合易经五行解析</p>
+</div>
+<div class="card">
+  <div class="form-row">
+    <label>出生年</label>
+    <input type="number" id="year" value="1990" min="1900" max="2030" style="max-width:90px">
+    <span style="font-size:.7rem;color:var(--t3)">阳历（正月前出生 -1）</span>
+  </div>
+  <div class="form-row">
+    <label>农历月</label>
+    <select id="month">
+      <option value="1">正月</option><option value="2">二月</option><option value="3">三月</option>
+      <option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
+      <option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
+      <option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
+    </select>
+    <label style="flex:0 0 48px">农历日</label>
+    <select id="day" style="max-width:90px"></select>
+  </div>
+  <div class="form-row">
+    <label>时辰</label>
+    <select id="hour">
+      <option value="0">子 23-01</option><option value="1">丑 01-03</option>
+      <option value="2">寅 03-05</option><option value="3">卯 05-07</option>
+      <option value="4">辰 07-09</option><option value="5">巳 09-11</option>
+      <option value="6">午 11-13</option><option value="7">未 13-15</option>
+      <option value="8">申 15-17</option><option value="9">酉 17-19</option>
+      <option value="10">戌 19-21</option><option value="11">亥 21-23</option>
+    </select>
+    <label style="flex:0 0 48px">性别</label>
+    <select id="gender"><option value="m">男</option><option value="f">女</option></select>
+  </div>
+  <button class="gen-btn" onclick="generate()">排 命 盘</button>
+  <p class="form-note">※ 以农历生日为准，不确定可用万年历换算</p>
+</div>
+
+<div id="chart-wrap">
+  <div class="chart-title" id="chart-title"></div>
+  <div class="chart" id="chart"></div>
+</div>
+<div id="interp">
+  <div class="isec"><h3>命宫解析 · 倪海夏论命法</h3><div id="ming-interp"></div></div>
+  <div class="isec"><h3>三方四正 · 财官迁命</h3><div class="igrid" id="sanfang-interp"></div></div>
+  <div class="isec"><h3>四化所在 · 命运着力点</h3><div class="igrid" id="sihua-interp"></div></div>
+  <div class="isec"><h3>易经启示 · 五行卦象</h3><div id="yijing-interp"></div></div>
+</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <span class="xbtn" onclick="closePopup()">✕</span>
+  <h3 id="popup-title"></h3>
+  <div id="popup-content"></div>
+</div>
+
+<script>
+const dayS=document.getElementById('day');
+for(let i=1;i<=30;i++){const o=document.createElement('option');o.value=i;o.textContent=i+'日';dayS.appendChild(o);}
+dayS.value=15;
+
+const TG=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const PN=['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','交友','官禄','田宅','福德','父母'];
+const MS=['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军'];
+const ZG=[0,1,2,3,4,5],TFG=[6,7,8,9,10,11,12,13];
+function ygz(y){const o=(y-1984+600)%60;return{g:o%10,z:o%12};}
+const NJ=[4,6,3,5,4,6,2,5,4,3,2,5,6,3,2,4,6,3,5,4,6,2,5,4,3,2,5,6,3,2];
+function getNJ(g,z){for(let i=0;i<60;i++)if(i%10===g&&i%12===z)return NJ[Math.floor(i/2)];return 3;}
+function pg(yg,pz){return((yg%5)*2+2+pz-2+120)%10;}
+function mg(m,h){return(1+m-h+120)%12;}
+function sg(yz,h){return(yz+h)%12;}
+function zwp(d,j){return(j-d+360)%12;}
+function tfp(zw){return(1-zw+12)%12;}
+function msp(d,j){
+  const zw=zwp(d,j),tf=tfp(zw);
+  return[zw,(zw-1+12)%12,(zw-3+12)%12,(zw-4+12)%12,(zw-5+12)%12,(zw-8+12)%12,
+    tf,(tf+1)%12,(tf+2)%12,(tf+3)%12,(tf+4)%12,(tf+5)%12,(tf+6)%12,(tf+10)%12];
+}
+function aux(yg,yz,m){
+  const ky=[[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[6,2],[3,5],[3,5]];
+  const[k,y]=ky[yg];
+  return{k,y,c:(10-yz+12)%12,q:(4-yz+12)%12,z:(3+m)%12,r:(23-m)%12,l:[2,3,5,6,5,6,8,9,11,0][yg]};
+}
+const SH=[[5,13,3,2],[1,11,0,7],[4,1,99,5],[7,4,1,9],[8,7,99,1],[3,8,11,99],[2,3,7,4],[9,2,99,99],[11,0,99,3],[13,9,7,8]];
+const HN=['化禄','化权','化科','化忌'];
+const HC=['hl','hq','hk','hj'];
+
+function generate(){
+  const yr=parseInt(document.getElementById('year').value);
+  const mo=parseInt(document.getElementById('month').value);
+  const dy=parseInt(document.getElementById('day').value);
+  const hr=parseInt(document.getElementById('hour').value);
+  const gd=document.getElementById('gender').value;
+  const{g:yg,z:yz}=ygz(yr);
+  const mp=mg(mo,hr),sp=sg(yz,hr);
+  const mgn=pg(yg,mp),j=getNJ(mgn,mp);
+  const st=msp(dy,j),ax=aux(yg,yz,mo),sh=SH[yg];
+  const isY=yg%2===0,isM=gd==='m';
+  const fwd=(isY&&isM)||(!isY&&!isM);
+  const cells=[];
+  for(let p=0;p<12;p++){
+    const pi=(p-mp+12)%12,pgn=pg(yg,p);
+    const dxo=fwd?(p-mp+12)%12:(mp-p+12)%12,dxs=j+dxo*10;
+    const msi=MS.map((_,i)=>i).filter(i=>st[i]===p);
+    const axH=[];
+    if(ax.k===p)axH.push({n:'天魁',c:'ax'});if(ax.y===p)axH.push({n:'天钺',c:'ax'});
+    if(ax.c===p)axH.push({n:'文昌',c:'ax'});if(ax.q===p)axH.push({n:'文曲',c:'ax'});
+    if(ax.z===p)axH.push({n:'左辅',c:'ax'});if(ax.r===p)axH.push({n:'右弼',c:'ax'});
+    if(ax.l===p)axH.push({n:'禄存',c:'ax'});
+    const hH=[];
+    sh.forEach((si,hi)=>{if(si<14&&st[si]===p)hH.push({l:HN[hi],c:HC[hi],s:MS[si]});});
+    cells.push({p,pi,pgn,msi,msn:msi.map(i=>MS[i]),axH,hH,dxs,im:p===mp,is:p===sp});
+  }
+  drawChart(cells,mp,sp,yr,mo,dy,hr,gd,yg,yz,j,fwd);
+  drawInterp(cells,mp,yg,yz,j,st,sh);
+  document.getElementById('chart-title').textContent=`${yr}年 农历${mo}月${dy}日 ${DZ[hr]}时 · ${gd==='m'?'男':'女'}命`;
+  document.getElementById('chart-wrap').style.display='block';
+  document.getElementById('interp').style.display='block';
+  document.getElementById('chart-wrap').scrollIntoView({behavior:'smooth'});
+}
+
+function drawChart(cells,mp,sp,yr,mo,dy,hr,gd,yg,yz,j,fwd){
+  const{g:yG,z:yZ}=ygz(yr);
+  const ch=document.getElementById('chart');ch.innerHTML='';
+  [5,6,7,8].forEach(p=>ch.appendChild(mkCell(cells[p])));
+  ch.appendChild(mkCell(cells[4]));
+  const cen=document.createElement('div');
+  cen.className='cell-center';
+  cen.innerHTML=`<div class="cn">${TG[yg]}${DZ[yz]}年命</div>
+    <div class="cr">生年：<span>${TG[yG]}${DZ[yZ]}(${yr})</span></div>
+    <div class="cr">命宫：<span>${TG[cells[mp].pgn]}${DZ[mp]}</span></div>
+    <div class="cr">身宫：<span>${DZ[sp]}宫</span></div>
+    <div class="cr">大限：<span>${fwd?'顺':'逆'}布 ${j}岁起</span></div>
+    <div class="jb j${j}">${['','','水二局','木三局','金四局','土五局','火六局'][j]}</div>`;
+  ch.appendChild(cen);ch.appendChild(mkCell(cells[9]));
+  ch.appendChild(mkCell(cells[3]));ch.appendChild(mkCell(cells[10]));
+  [2,1,0,11].forEach(p=>ch.appendChild(mkCell(cells[p])));
+}
+
+function mkCell(c){
+  const d=document.createElement('div');
+  d.className='cell'+(c.im?' ming':'');
+  d.onclick=()=>showP(c);
+  let h=`<span class="pname${c.im?' ml':''}">${PN[c.pi]}</span><span class="gz">${TG[c.pgn]}${DZ[c.p]}</span>`;
+  if(c.is)h+=`<span class="shen-mk">身</span>`;
+  h+='<div class="stars">';
+  c.msi.forEach(i=>{h+=`<span class="s ${ZG.includes(i)?'zw':TFG.includes(i)?'tf':''}">${MS[i]}</span> `;});
+  c.hH.forEach(h2=>{h+=`<span class="hua ${h2.c}">${h2.l}</span>`;});
+  c.axH.forEach(a=>{h+=`<span class="s ax">${a.n}</span> `;});
+  h+=`</div><span class="dx">${c.dxs}-${c.dxs+9}岁</span>`;
+  d.innerHTML=h;return d;
+}
+
+const SI={
+  '紫微':'帝星。有领导气质，自尊心强，贵气显露，善于统御，易有贵人相助。命宫坐紫微，倪师言：此人天生有架势，不甘居人下。',
+  '天机':'益寿星。聪明机智，思维活跃，善谋略，但多变不定。倪师：天机动则灵，静则滞，要在动中求变。',
+  '太阳':'官禄主。付出型人格，光明磊落，名声重于财。男命旺，女命主夫。',
+  '武曲':'财星。意志坚定，行动力强，重实干，有财运，但性格刚克，感情略显孤独。',
+  '天同':'福星。随和享乐，内心平和，喜安逸，有口福，但缺乏进取心。',
+  '廉贞':'囚星才艺星。多才，性刚，感情复杂，是非多，若化禄可化险为夷。',
+  '天府':'财库。稳重保守，积财能力强，有地位，处事圆融，主富不主贵。',
+  '太阴':'富星田宅主。柔顺内敛，富有同情心，女命尤佳，财从暗处来。',
+  '贪狼':'桃花星变化星。多才多艺，欲望强，社交好，善变，财来财去。',
+  '巨门':'是非星。口才极佳，善思辨，疑心重，宜从事靠嘴吃饭的职业。',
+  '天相':'印星。重情义，服务精神强，宜做幕僚辅佐，配合力强。',
+  '天梁':'荫星。清高正直，有贵人缘，善救助他人，主长寿。',
+  '七杀':'将星。魄力十足，行动果断，开创力强，但克己克人，孤独感重。',
+  '破军':'耗星开创星。破旧立新，勇于改变，创业型人格，感情多变。'
+};
+const PT={
+  '命宫':'命宫是一生人格底色与格局所在，看主星定基调，三方四正辅助判断。',
+  '兄弟':'看手足情分，也看平辈朋友关系，及个人财库来源之一。',
+  '夫妻':'看感情婚姻，也代表合伙关系。倪师：看夫妻宫要结合命宫一起看。',
+  '子女':'看子嗣缘分，也看部属下属，以及自我创造力的表现。',
+  '财帛':'看赚钱方式与财运起伏，是"来财"的象，并非存财。',
+  '疾厄':'看身体健康体质，也看处事抗压能力，倪师极重视此宫。',
+  '迁移':'看出外运，在外的人际与机遇，也代表人前的形象。',
+  '交友':'看朋友、下属、合作伙伴的质量与关系。',
+  '官禄':'看事业格局与职场运势，是发展的核心宫位之一。',
+  '田宅':'看不动产、家庭环境，也代表内心安全感的来源。',
+  '福德':'看内心享受、兴趣与精神生活，也代表前世因缘。',
+  '父母':'看与长辈、上司的关系，也看文书印信的吉凶。'
+};
+const SG={
+  '紫微':{g:'☰',n:'乾卦',m:'天行健，君子以自强不息。紫微坐命，格局如天，宜广纳百川，勿独断专行。'},
+  '天机':{g:'☴',n:'巽卦',m:'随风渗透，顺势而入。天机命者善谋，审时度势，方能以柔克刚。'},
+  '太阳':{g:'☲',n:'离卦',m:'明两作，离；大人以继明照四方。太阳命者如火，付出是天性，光明是使命。'},
+  '武曲':{g:'☱',n:'兑卦',m:'兑为泽，君子以朋友讲习。武曲命者重实干，刚中有柔，财聚财散皆自然。'},
+  '天同':{g:'☵',n:'坎卦',m:'习坎，有孚，维心亨。天同命者随遇而安，水善利万物而不争。'},
+  '廉贞':{g:'☳',n:'震卦',m:'洊雷，震；君子以恐惧修省。廉贞命者刚烈多变，震动之后当反躬自省。'},
+  '天府':{g:'☷',n:'坤卦',m:'地势坤，君子以厚德载物。天府命者如大地，稳固包容，积财蓄德。'},
+  '太阴':{g:'☵',n:'坎卦',m:'水善利万物而不争。太阴命者柔顺内敛，财从暗处积，德从忍中来。'},
+  '贪狼':{g:'☶',n:'艮卦',m:'兼山，艮；君子以思不出其位。贪狼命者欲望旺，知止而后有定。'},
+  '巨门':{g:'☱',n:'兑卦',m:'说以先民，民忘其劳。巨门命者善言，宜以正道出口，避免口舌是非。'},
+  '天相':{g:'☴',n:'巽卦',m:'重巽以申命，刚巽乎中正而志行。天相命者宜辅佐，顺势配合方得其用。'},
+  '天梁':{g:'☶',n:'艮卦',m:'艮其背，不获其身。天梁命者厚重清高，止于所当止，乃真智慧。'},
+  '七杀':{g:'☳',n:'震卦',m:'震来虩虩，笑言哑哑。七杀命者果断勇猛，震后须镇定，以魄力驾驭方向。'},
+  '破军':{g:'☰',n:'乾卦',m:'潜龙勿用→见龙在田→飞龙在天。破军命者破旧立新，如龙之变化，勇于蜕变。'}
+};
+const JM={2:'水二局：命主聪慧灵动，宜从事需要应变能力的职业，早年较辛苦，逢水运发达。',3:'木三局：命主善生发，事业有规划性，贵人运好，中年以后格局渐显。',4:'金四局：命主坚毅务实，财运稳健，适合金融、建筑、制造业。',5:'土五局：命主厚重耐劳，稳打稳扎，房地产、农业、传统行业吉。',6:'火六局：命主热情进取，容易得名，事业起伏较大，须注意过于冒进。'};
+const JN={2:'水二局',3:'木三局',4:'金四局',5:'土五局',6:'火六局'};
+
+function showP(c){
+  document.getElementById('popup-title').textContent=`${PN[c.pi]} · ${TG[c.pgn]}${DZ[c.p]}`;
+  let h=`<p><strong>大限：</strong>${c.dxs}–${c.dxs+9}岁</p>`;
+  if(c.msn.length>0){
+    h+=`<p><strong>主星：</strong>${c.msn.join('、')}</p>`;
+    c.msi.forEach(i=>{h+=`<p style="margin-left:8px;color:var(--gold)">▸ ${MS[i]}：${SI[MS[i]]||''}</p>`;});
+  }else{h+=`<p style="color:var(--t3)">空宫 — 参看对宫${DZ[(c.p+6)%12]}宫。</p>`;}
+  if(c.hH.length>0){h+=`<p><strong>四化：</strong>`;c.hH.forEach(x=>h+=`<span class="hua ${x.c}">${x.s}${x.l}</span> `);h+=`</p>`;}
+  if(c.axH.length>0){h+=`<p><strong>辅星：</strong>${c.axH.map(a=>a.n).join('、')}</p>`;}
+  h+=`<p style="margin-top:10px;padding-top:10px;border-top:1px solid var(--b1);font-size:.74rem;color:var(--t3)">${PT[PN[c.pi]]||''}</p>`;
+  document.getElementById('popup-content').innerHTML=h;
+  document.getElementById('popup').style.display='block';
+  document.getElementById('overlay').style.display='block';
+}
+function closePopup(){document.getElementById('popup').style.display='none';document.getElementById('overlay').style.display='none';}
+
+function drawInterp(cells,mp,yg,yz,j,st,sh){
+  const mc=cells[mp],ms=mc.msn,ps=ms[0]||'空宫';
+  let mh='';
+  if(ms.length===0){
+    const op=cells[(mp+6)%12];
+    mh=`<div class="iitem"><h4>命宫空宫</h4><p>命宫无主星，参看对宫<strong>${DZ[(mp+6)%12]}宫</strong>：${op.msn.join('、')||'亦无星'}。倪师言：空宫不空，对宫飞化入则有影响。</p></div>`;
+  }else{
+    ms.forEach(s=>{
+      const gua=SG[s];
+      mh+=`<div class="iitem"><h4>${s}坐命</h4><p>${SI[s]||''}</p>`;
+      if(gua)mh+=`<div class="ybox"><span class="yg">${gua.g}</span><span class="yt"><strong>${gua.n}</strong><br>${gua.m}</span></div>`;
+      mh+=`</div>`;
+    });
+  }
+  mh+=`<div class="iitem"><h4>${JN[j]}</h4><p>${JM[j]||''}</p></div>`;
+  document.getElementById('ming-interp').innerHTML=`<div class="igrid">${mh}</div>`;
+  const sfIdx=[0,4,8,6],sfN=['命宫','财帛','官禄','迁移'];
+  let sfh='';
+  sfIdx.forEach((o,i)=>{
+    const c=cells[(mp+o)%12];
+    sfh+=`<div class="iitem"><h4>${sfN[i]}（${DZ[(mp+o)%12]}宫）</h4><p>主星：${c.msn.length?c.msn.join('、'):'空宫'}<br>`;
+    if(c.hH.length)sfh+=`四化：${c.hH.map(h=>`<span class="hua ${h.c}">${h.s}${h.l}</span>`).join('')}<br>`;
+    sfh+=`<span style="font-size:.7rem;color:var(--t3)">${PT[PN[c.pi]]||''}</span></p></div>`;
+  });
+  document.getElementById('sanfang-interp').innerHTML=sfh;
+  let shh='';
+  sh.forEach((si,hi)=>{
+    if(si>=14)return;
+    const sp2=st[si],pi=(sp2-mp+12)%12,pn=PN[pi];
+    shh+=`<div class="iitem"><h4>${MS[si]}${HN[hi]} · 入${pn}</h4>`;
+    shh+=`<p>${MS[si]}落于${DZ[sp2]}宫（${pn}）。${hi===0?'禄在此处，顺畅有益，宜发力经营。':hi===1?'权在此处，有主导权，可担大任。':hi===2?'科在此处，声誉好，有贵人。':'忌在此处，执念所在，卡关多费心力。倪师：忌不是坏，是最在意的地方。'}</p>`;
+    shh+=`<p class="qt">${PT[pn]||''}</p></div>`;
+  });
+  document.getElementById('sihua-interp').innerHTML=shh;
+  const wx=['','','水','木','金','土','火'][j];
+  const wm={水:'☵坎 — 柔顺处下，以不争而胜',木:'☴☳ — 生发向上，生机勃勃',金:'☰☱ — 刚决收敛，义利并重',土:'☷☶ — 厚重承载，稳中求进',火:'☲离 — 光明付出，文明化成'};
+  let yh=`<div class="iitem"><h4>五行局 · 卦象</h4><p>${JN[j]}对应${wx}行。${wm[wx]||''}</p></div>`;
+  const pg2=SG[ps];
+  if(pg2)yh+=`<div class="iitem"><h4>${ps} · ${pg2.n}</h4><div class="ybox"><span class="yg">${pg2.g}</span><span class="yt">${pg2.m}</span></div></div>`;
+  const ji=sh[3];
+  if(ji<14){const jp=PN[(st[ji]-mp+12)%12];yh+=`<div class="iitem"><h4>化忌 · 易经启示</h4><p>${MS[ji]}化忌落于<strong>${jp}</strong>。</p><p class="qt">忌非凶，是"执"。${jp}是你最在意的地方，也是成长的突破口。坎卦曰：习坎，有孚，维心亨。身处险难，心正则通。</p></div>`;}
+  document.getElementById('yijing-interp').innerHTML=`<div class="igrid">${yh}</div>`;
+}
+</script>
+</body>
+</html>

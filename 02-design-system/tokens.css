@@ -1,0 +1,206 @@
+/* ══════════════════════════════════════════
+   易学泰来才 · Design System Tokens
+   Nordic Minimalist Dark Theme
+   ══════════════════════════════════════════ */
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Design Tokens ── */
+:root {
+  /* Background layers */
+  --bg:  #09090f;
+  --bg2: #0d0e1a;
+
+  /* Surface layers (glass cards) */
+  --s1: rgba(255,255,255,.03);
+  --s2: rgba(255,255,255,.06);
+
+  /* Border layers */
+  --b1: rgba(180,190,240,.07);
+  --b2: rgba(180,190,240,.14);
+
+  /* Text hierarchy */
+  --t1: #dde0f0;   /* primary */
+  --t2: #7880a8;   /* secondary */
+  --t3: #3e4062;   /* muted */
+
+  /* Accent: lavender blue */
+  --accent:  #9aabff;
+  --accentd: rgba(154,171,255,.12);
+
+  /* Accent: muted gold */
+  --gold:  #c8a882;
+  --goldd: rgba(200,168,130,.12);
+
+  /* Border radius */
+  --r: 12px;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--t1);
+  font-family: -apple-system, "Helvetica Neue", "PingFang SC",
+               "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 200; letter-spacing: .32em; color: var(--t1); }
+h2 { font-size: 1.5rem; font-weight: 300; letter-spacing: .24em; color: var(--t1); }
+h3 { font-size: 1rem;   font-weight: 400; letter-spacing: .14em; color: var(--t1); }
+p  { font-size: .92rem; color: var(--t2); line-height: 1.92; margin-bottom: 12px; }
+blockquote {
+  border-left: 2px solid var(--b2);
+  padding-left: 12px;
+  margin: 12px 0;
+  color: var(--t3);
+  font-style: italic;
+  font-size: .9rem;
+  line-height: 1.82;
+}
+strong { color: var(--t1); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Card ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 28px;
+  transition: border-color .2s;
+}
+.card:hover { border-color: var(--b2); }
+
+/* ── Sticky header (glass) ── */
+.glass-header {
+  position: sticky;
+  top: 0;
+  background: rgba(9,9,15,.88);
+  border-bottom: 1px solid var(--b1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 100;
+}
+
+/* ── Buttons ── */
+.btn-gold {
+  background: var(--goldd);
+  color: var(--gold);
+  border: 1px solid rgba(200,168,130,.28);
+  border-radius: 11px;
+  padding: 13px 24px;
+  font-family: inherit;
+  font-size: 1rem;
+  letter-spacing: .2em;
+  cursor: pointer;
+  transition: all .22s;
+}
+.btn-gold:hover {
+  background: rgba(200,168,130,.22);
+  border-color: rgba(200,168,130,.5);
+  box-shadow: 0 4px 28px rgba(200,168,130,.14);
+}
+
+.btn-accent {
+  background: var(--accentd);
+  color: var(--accent);
+  border: 1px solid rgba(154,171,255,.28);
+  border-radius: 11px;
+  padding: 10px 22px;
+  font-family: inherit;
+  font-size: .88rem;
+  cursor: pointer;
+  transition: all .22s;
+}
+.btn-accent:hover {
+  background: rgba(154,171,255,.2);
+  border-color: rgba(154,171,255,.5);
+}
+
+/* ── Form elements ── */
+.form-input {
+  background: rgba(255,255,255,.04);
+  color: var(--t1);
+  border: 1px solid var(--b1);
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: .92rem;
+  outline: none;
+  transition: border-color .2s;
+  width: 100%;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-input option { background: #0e0f1e; }
+
+/* ── Table ── */
+.tbl { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 14px 0; }
+.tbl th {
+  background: rgba(255,255,255,.03);
+  color: var(--t2);
+  padding: 11px 14px;
+  text-align: left;
+  border: 1px solid var(--b1);
+  font-weight: 400;
+  letter-spacing: .06em;
+}
+.tbl td { padding: 11px 14px; border: 1px solid var(--b1); color: var(--t2); }
+.tbl tr:hover td { background: var(--s1); }
+
+/* ── Popup / Modal ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(5px);
+  z-index: 99;
+}
+.modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: #0e0f1e;
+  border: 1px solid var(--b2);
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 420px;
+  width: 92%;
+  z-index: 100;
+  max-height: 84vh;
+  overflow-y: auto;
+}
+
+/* ── Wu Xing (Five Elements) color tags ── */
+.wx-item { padding: 4px 14px; border-radius: 16px; border: 1px solid; display: inline-block; font-size: .8rem; }
+.wx-mu   { color: #70bb70; border-color: rgba(80,160,80,.22);   background: rgba(80,160,80,.05);   }
+.wx-huo  { color: #c87060; border-color: rgba(190,90,70,.22);   background: rgba(190,90,70,.05);   }
+.wx-tu   { color: #b89860; border-color: rgba(170,140,70,.22);  background: rgba(170,140,70,.05);  }
+.wx-jin  { color: #b0b070; border-color: rgba(170,170,110,.22); background: rgba(170,170,110,.05); }
+.wx-shui { color: #6080c8; border-color: rgba(70,110,190,.22);  background: rgba(70,110,190,.05);  }
+
+/* ── Status tags ── */
+.tag { display: inline-block; padding: 2px 9px; border-radius: 11px; font-size: .68rem; border: 1px solid; margin: 2px; }
+.tag-ji    { border-color: rgba(80,190,80,.28);  color: #60c060; background: rgba(80,190,80,.06);  }
+.tag-xiong { border-color: rgba(220,80,80,.28);  color: #d07070; background: rgba(220,80,80,.06);  }
+.tag-zhong { border-color: rgba(154,171,255,.28); color: var(--accent); background: var(--accentd); }
+.tag-gold  { border-color: rgba(200,168,130,.28); color: var(--gold);   background: var(--goldd);   }
+
+/* ── Animation utilities ── */
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.anim-in { animation: panel-in .35s ease; }
+
+/* ── Scrollbar (webkit) ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 3px; }
