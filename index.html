@@ -32,54 +32,105 @@ body{background:var(--bg);color:var(--t1);font-family:-apple-system,"Helvetica N
 #star-canvas{position:absolute;inset:0;pointer-events:none}
 
 #bagua-ring{
-  position:relative;width:290px;height:290px;
-  margin-bottom:52px;flex-shrink:0;
+  position:relative;width:580px;height:580px;
+  margin-bottom:32px;flex-shrink:0;
 }
+/* Responsive scale-down on small screens */
+@media(max-width:640px){
+  #bagua-ring{transform:scale(.62);margin-bottom:-80px}
+}
+@media(max-width:400px){
+  #bagua-ring{transform:scale(.50);margin-bottom:-116px}
+}
+
+/* Rotating conic sweep — main light effect */
+#ring-halo{
+  position:absolute;left:50%;top:50%;
+  width:500px;height:500px;margin:-250px;
+  border-radius:50%;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(154,171,255,.13) 12%,
+    rgba(200,168,130,.09) 26%,
+    transparent 40%,
+    rgba(154,171,255,.07) 58%,
+    rgba(200,210,255,.11) 74%,
+    transparent 88%,
+    transparent 100%
+  );
+  animation:halo-spin 9s linear infinite;
+  pointer-events:none;
+}
+@keyframes halo-spin{to{transform:rotate(360deg)}}
+
+/* Breathing outer glow */
+#ring-glow{
+  position:absolute;left:50%;top:50%;
+  width:560px;height:560px;margin:-280px;
+  border-radius:50%;
+  background:radial-gradient(circle,transparent 38%,rgba(154,171,255,.06) 52%,rgba(200,168,130,.04) 64%,transparent 74%);
+  animation:glow-breath 3.4s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes glow-breath{
+  from{opacity:.5;transform:scale(.94)}
+  to  {opacity:1; transform:scale(1.05)}
+}
+
 #ring-track{
   position:absolute;
   left:50%;top:50%;
-  width:230px;height:230px;
-  margin:-115px;
+  width:460px;height:460px;
+  margin:-230px;
   border-radius:50%;
-  border:1px solid rgba(160,170,230,.07);
+  border:1px solid rgba(160,170,230,.10);
   pointer-events:none;
 }
 #ring-track::before{
   content:'';position:absolute;
-  inset:36px;border-radius:50%;
-  border:1px dashed rgba(160,170,230,.04);
+  inset:72px;border-radius:50%;
+  border:1px dashed rgba(160,170,230,.05);
 }
 .gua-node{
   position:absolute;left:50%;top:50%;
-  width:50px;height:50px;margin:-25px;
+  width:100px;height:100px;margin:-50px;
   border-radius:50%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(154,171,255,.05);
-  border:1px solid rgba(154,171,255,.15);
+  background:rgba(154,171,255,.04);
+  border:1px solid rgba(154,171,255,.14);
   will-change:transform;
-  transition:box-shadow .3s,border-color .3s;
+  transition:box-shadow .4s,border-color .4s,background .4s;
 }
-.gua-node .gsym{font-size:1.45rem;line-height:1;color:rgba(200,210,255,.8)}
-.gua-node .gname{font-size:.38rem;color:rgba(154,171,255,.45);margin-top:1px;letter-spacing:.05em}
+.gua-node .gsym{font-size:2.9rem;line-height:1;color:rgba(200,210,255,.8)}
+.gua-node .gname{font-size:.72rem;color:rgba(154,171,255,.45);margin-top:3px;letter-spacing:.06em}
 .gua-node.lit{
-  border-color:rgba(154,171,255,.5);
-  box-shadow:0 0 18px rgba(154,171,255,.35);
+  border-color:rgba(154,171,255,.55);
+  background:rgba(154,171,255,.08);
 }
-.gua-node.lit .gsym{color:rgba(200,210,255,1)}
+.gua-node.lit .gsym{color:#fff}
 
 #ring-center{
   position:absolute;left:50%;top:50%;
-  width:72px;height:72px;margin:-36px;
+  width:144px;height:144px;margin:-72px;
   display:flex;align-items:center;justify-content:center;
 }
 #taichi{
-  font-size:3rem;color:rgba(220,228,255,.55);
+  font-size:6rem;color:rgba(220,228,255,.5);
   display:inline-block;
-  filter:drop-shadow(0 0 14px rgba(154,171,255,.35));
+  filter:drop-shadow(0 0 22px rgba(154,171,255,.3));
   transition:filter .4s,font-size .4s,opacity .5s;
   will-change:transform;
+  animation:taichi-pulse 4s ease-in-out infinite alternate;
 }
-#intro.spin #taichi{filter:drop-shadow(0 0 28px rgba(154,171,255,.8))}
+@keyframes taichi-pulse{
+  from{filter:drop-shadow(0 0 18px rgba(154,171,255,.25)) drop-shadow(0 0 40px rgba(154,171,255,.08))}
+  to  {filter:drop-shadow(0 0 32px rgba(154,171,255,.55)) drop-shadow(0 0 70px rgba(200,168,130,.18))}
+}
+#intro.spin #taichi{
+  animation:none;
+  filter:drop-shadow(0 0 40px rgba(154,171,255,.9)) drop-shadow(0 0 80px rgba(200,168,130,.4));
+}
 
 #intro-text{text-align:center}
 #intro-logo{
@@ -373,6 +424,8 @@ footer a{color:var(--t3);text-decoration:none}
 <div id="intro" onclick="startUnlock()">
   <canvas id="star-canvas"></canvas>
   <div id="bagua-ring">
+    <div id="ring-glow"></div>
+    <div id="ring-halo"></div>
     <div id="ring-track"></div>
     <div class="gua-node"><span class="gsym">☰</span><span class="gname">乾</span></div>
     <div class="gua-node"><span class="gsym">☱</span><span class="gname">兑</span></div>
@@ -877,22 +930,39 @@ footer a{color:var(--t3);text-decoration:none}
   let litIdx = 0;
   let litTimer = 0;
 
-  // Colors for each gua node symbol
+  // Per-trigram colors: symbol color + glow color
   const symColors = [
-    'rgba(255,220,180,.9)',  // ☰乾 warm gold
-    'rgba(160,220,255,.9)',  // ☱兑 sky blue
-    'rgba(255,185,110,.9)',  // ☲离 orange
-    'rgba(195,165,255,.9)',  // ☳震 violet
-    'rgba(165,240,195,.9)',  // ☴巽 green
-    'rgba(130,175,255,.9)',  // ☵坎 blue
-    'rgba(210,205,185,.9)',  // ☶艮 stone
-    'rgba(210,190,150,.9)',  // ☷坤 earth tan
+    'rgba(255,220,180,.95)',  // ☰乾 warm gold
+    'rgba(160,220,255,.95)',  // ☱兑 sky blue
+    'rgba(255,185,110,.95)',  // ☲离 orange
+    'rgba(195,165,255,.95)',  // ☳震 violet
+    'rgba(165,240,195,.95)',  // ☴巽 green
+    'rgba(130,175,255,.95)',  // ☵坎 blue
+    'rgba(210,205,185,.95)',  // ☶艮 stone
+    'rgba(210,190,150,.95)',  // ☷坤 earth tan
+  ];
+  // Glow shadow color matching each trigram
+  const glowColors = [
+    '255,200,100',   // 乾 gold
+    '100,200,255',   // 兑 sky
+    '255,160,60',    // 离 orange
+    '180,140,255',   // 震 violet
+    '120,230,160',   // 巽 green
+    '80,150,255',    // 坎 blue
+    '200,195,165',   // 艮 stone
+    '200,175,110',   // 坤 earth
   ];
   nodes.forEach((n,i)=>{
     n.querySelector('.gsym').style.color = symColors[i];
+    n._glowColor = glowColors[i];
   });
 
-  function getR(){ return window.innerWidth < 480 ? 88 : 110; }
+  function getR(){
+    const w = window.innerWidth;
+    if(w < 400) return 148;
+    if(w < 480) return 170;
+    return 220;
+  }
 
   function tick(){
     if(!running) return;
@@ -903,12 +973,17 @@ footer a{color:var(--t3);text-decoration:none}
       n.style.transform = `translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px)`;
     });
     taichi.style.transform = `rotate(${angle*0.28}deg)`;
-    // Cycle lit highlight
+    // Cycle lit highlight with per-trigram colored glow
     litTimer++;
     if(litTimer > 70){
-      nodes[litIdx%8].classList.remove('lit');
+      const prev = nodes[litIdx%8];
+      prev.classList.remove('lit');
+      prev.style.boxShadow = '';
       litIdx++;
-      nodes[litIdx%8].classList.add('lit');
+      const next = nodes[litIdx%8];
+      next.classList.add('lit');
+      const gc = next._glowColor||'154,171,255';
+      next.style.boxShadow = `0 0 28px rgba(${gc},.55), 0 0 60px rgba(${gc},.22), inset 0 0 18px rgba(${gc},.10)`;
       litTimer = 0;
     }
     requestAnimationFrame(tick);
@@ -920,8 +995,12 @@ footer a{color:var(--t3);text-decoration:none}
     unlocking = true;
     const intro = document.getElementById('intro');
     intro.classList.add('spin');
-    // All nodes light up
-    nodes.forEach(n=>n.classList.add('lit'));
+    // All nodes light up with their own color
+    nodes.forEach(n=>{
+      n.classList.add('lit');
+      const gc = n._glowColor||'154,171,255';
+      n.style.boxShadow = `0 0 36px rgba(${gc},.7), 0 0 80px rgba(${gc},.3), inset 0 0 24px rgba(${gc},.15)`;
+    });
     // Accelerate
     let step=0;
     const accel = setInterval(()=>{
@@ -939,7 +1018,7 @@ footer a{color:var(--t3);text-decoration:none}
           n.style.opacity = '0';
         });
         taichi.style.transition = 'font-size .4s ease-in, opacity .5s .15s';
-        taichi.style.fontSize = '7rem';
+        taichi.style.fontSize = '14rem';
         taichi.style.opacity = '0';
         setTimeout(()=>{
           intro.classList.add('done');
