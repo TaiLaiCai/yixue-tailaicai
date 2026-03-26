@@ -2,9 +2,23 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>太来才 · 紫微易学</title>
-<meta name="description" content="紫微斗数命盘在线排盘，基于倪海夏推演法，结合易经五行解析。">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>太来才 · 紫微易学 | 紫微斗数命盘 · 易经占卜</title>
+<meta name="description" content="紫微斗数命盘在线免费排盘，基于倪海夏推演法，结合易经五行解析。提供六十四卦查询、铜钱起卦、梅花易数占卜，探索命运智慧。">
+<meta name="keywords" content="紫微斗数,命盘,排盘,易经,六十四卦,起卦,占卜,八卦,五行,天干地支,倪海夏,梅花易数">
+<meta name="theme-color" content="#09090f">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sandlabs.cn/ziwei/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sandlabs.cn/ziwei/">
+<meta property="og:title" content="太来才 · 紫微易学 | 紫微斗数命盘 · 易经占卜">
+<meta property="og:description" content="紫微斗数命盘在线免费排盘，基于倪海夏推演法，结合易经五行解析。提供六十四卦查询、铜钱起卦、梅花易数占卜。">
+<meta property="og:locale" content="zh_CN">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="太来才 · 紫微易学">
+<meta name="twitter:description" content="紫微斗数命盘在线免费排盘，结合易经五行解析，提供六十四卦查询与起卦占卜。">
 <style>
 /* ── Reset & Base ── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -449,14 +463,14 @@ footer a{color:var(--t3);text-decoration:none}
 
 <header>
   <div class="header-inner">
-    <a class="site-logo" href="#">易学泰来才</a>
-    <nav id="main-nav">
-      <button class="tab-btn featured active" data-tab="ziwei">✦ 紫微命盘</button>
-      <button class="tab-btn" data-tab="yijing">易经导论</button>
-      <button class="tab-btn" data-tab="wuxing">五行八卦</button>
-      <button class="tab-btn" data-tab="ganzhi">天干地支</button>
-      <button class="tab-btn" data-tab="liushisi">六十四卦</button>
-      <button class="tab-btn featured" data-tab="divination">☯ 起卦占卜</button>
+    <a class="site-logo" href="/ziwei/" aria-label="太来才易学首页">易学泰来才</a>
+    <nav id="main-nav" role="navigation" aria-label="主导航">
+      <button class="tab-btn featured active" data-tab="ziwei" aria-selected="true">✦ 紫微命盘</button>
+      <button class="tab-btn" data-tab="yijing" aria-selected="false">易经导论</button>
+      <button class="tab-btn" data-tab="wuxing" aria-selected="false">五行八卦</button>
+      <button class="tab-btn" data-tab="ganzhi" aria-selected="false">天干地支</button>
+      <button class="tab-btn" data-tab="liushisi" aria-selected="false">六十四卦</button>
+      <button class="tab-btn featured" data-tab="divination" aria-selected="false">☯ 起卦占卜</button>
     </nav>
   </div>
 </header>
@@ -879,8 +893,9 @@ footer a{color:var(--t3);text-decoration:none}
 </div>
 
 <footer>
-  <p>© tailaicai.com · 紫微易学</p>
+  <p>© <a href="https://sandlabs.cn/ziwei/" rel="noopener">太来才 · 紫微易学</a></p>
   <p style="margin-top:4px">基于倪海夏紫微斗数推演法 · 结合易经第一性原理解析</p>
+  <p style="margin-top:8px;font-size:.65rem;opacity:.5">本站内容仅供参考，命运掌握在自己手中</p>
 </footer>
 
 </div><!-- #app -->
@@ -1034,9 +1049,14 @@ footer a{color:var(--t3);text-decoration:none}
 ══════════════════════════════════════════ */
 function switchTab(id){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.remove('active');
+    b.setAttribute('aria-selected','false');
+  });
   document.getElementById('tab-'+id).classList.add('active');
-  document.querySelector('[data-tab="'+id+'"]').classList.add('active');
+  const activeBtn=document.querySelector('[data-tab="'+id+'"]');
+  activeBtn.classList.add('active');
+  activeBtn.setAttribute('aria-selected','true');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 document.getElementById('main-nav').addEventListener('click',e=>{
