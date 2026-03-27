@@ -432,9 +432,47 @@ footer a{color:var(--t3);text-decoration:none}
 .sring.lit{stroke:rgba(154,171,255,.5);transition:stroke .4s}
 .sck{stroke:rgba(154,171,255,0);fill:none;stroke-width:1.2;stroke-dasharray:52;stroke-dashoffset:52;transition:stroke-dashoffset .5s ease,stroke .3s}
 .sck.show{stroke-dashoffset:0;stroke:rgba(154,171,255,.4)}
+/* ── Lang Switcher ── */
+.lang-switcher {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 10000;
+  display: flex;
+  gap: 4px;
+  background: rgba(9,9,15,0.85);
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 20px;
+  padding: 4px 8px;
+  backdrop-filter: blur(10px);
+}
+.lang-btn {
+  background: none;
+  border: none;
+  color: rgba(212,175,55,0.6);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 12px;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.lang-btn:hover { color: #d4af37; }
+.lang-btn.active {
+  background: rgba(212,175,55,0.15);
+  color: #d4af37;
+}
 </style>
 </head>
 <body>
+
+<!-- ── 语言切换器 ── -->
+<div class="lang-switcher" id="langSwitcher">
+  <button class="lang-btn active" data-lang="zh">中文</button>
+  <button class="lang-btn" data-lang="en">EN</button>
+  <button class="lang-btn" data-lang="ja">日本語</button>
+</div>
 
 <!-- ══════════ INTRO SCREEN ══════════ -->
 <div id="intro" onclick="startUnlock()">
@@ -454,9 +492,9 @@ footer a{color:var(--t3);text-decoration:none}
     <div id="ring-center"><span id="taichi">☯</span></div>
   </div>
   <div id="intro-text">
-    <div id="intro-logo">太来才</div>
-    <div id="intro-sub">紫微 · 易经 · 命运推演</div>
-    <div id="unlock-hint">── 点击任意处，解开命运之门 ──</div>
+    <div id="intro-logo" data-i18n="intro_title">太来才</div>
+    <div id="intro-sub" data-i18n="intro_subtitle">紫微 · 易经 · 命运推演</div>
+    <div id="unlock-hint" data-i18n="intro_unlock">── 点击任意处，解开命运之门 ──</div>
   </div>
 </div>
 
@@ -467,12 +505,12 @@ footer a{color:var(--t3);text-decoration:none}
   <div class="header-inner">
     <a class="site-logo" href="/ziwei/" aria-label="太来才易学首页">易学泰来才</a>
     <nav id="main-nav" role="navigation" aria-label="主导航">
-      <button class="tab-btn featured active" data-tab="ziwei" aria-selected="true">✦ 紫微命盘</button>
-      <button class="tab-btn" data-tab="yijing" aria-selected="false">易经导论</button>
-      <button class="tab-btn" data-tab="wuxing" aria-selected="false">五行八卦</button>
-      <button class="tab-btn" data-tab="ganzhi" aria-selected="false">天干地支</button>
-      <button class="tab-btn" data-tab="liushisi" aria-selected="false">六十四卦</button>
-      <button class="tab-btn featured" data-tab="divination" aria-selected="false">☯ 起卦占卜</button>
+      <button class="tab-btn featured active" data-tab="ziwei" aria-selected="true" data-i18n="nav_ziwei">✦ 紫微命盘</button>
+      <button class="tab-btn" data-tab="yijing" aria-selected="false" data-i18n="nav_intro">易经导论</button>
+      <button class="tab-btn" data-tab="wuxing" aria-selected="false" data-i18n="nav_wuxing">五行八卦</button>
+      <button class="tab-btn" data-tab="ganzhi" aria-selected="false" data-i18n="nav_tiangan">天干地支</button>
+      <button class="tab-btn" data-tab="liushisi" aria-selected="false" data-i18n="nav_liushisi">六十四卦</button>
+      <button class="tab-btn featured" data-tab="divination" aria-selected="false" data-i18n="nav_qigua">☯ 起卦占卜</button>
     </nav>
   </div>
 </header>
@@ -481,28 +519,28 @@ footer a{color:var(--t3);text-decoration:none}
 <div id="tab-ziwei" class="tab-panel active">
   <div class="form-wrap">
     <div class="form-title">
-      <h1>紫微斗数</h1>
+      <h1 data-i18n="ziwei_title">紫微斗数</h1>
       <p>倪海夏推演法 · 结合易经五行解析</p>
     </div>
     <div class="card">
       <div class="form-row">
-        <label>出生年</label>
+        <label data-i18n="ziwei_birth_year">出生年</label>
         <input type="number" id="year" value="1990" min="1900" max="2030" style="max-width:90px">
         <span style="font-size:.7rem;color:var(--t3)">阳历（正月前出生 -1）</span>
       </div>
       <div class="form-row">
-        <label>农历月</label>
+        <label data-i18n="ziwei_birth_month">农历月</label>
         <select id="month">
           <option value="1">正月</option><option value="2">二月</option><option value="3">三月</option>
           <option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
           <option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
           <option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
         </select>
-        <label style="flex:0 0 48px">农历日</label>
+        <label style="flex:0 0 48px" data-i18n="ziwei_birth_day">农历日</label>
         <select id="day" style="max-width:90px"></select>
       </div>
       <div class="form-row">
-        <label>时辰</label>
+        <label data-i18n="ziwei_birth_hour">时辰</label>
         <select id="hour">
           <option value="0">子 23-01</option><option value="1">丑 01-03</option>
           <option value="2">寅 03-05</option><option value="3">卯 05-07</option>
@@ -511,10 +549,10 @@ footer a{color:var(--t3);text-decoration:none}
           <option value="8">申 15-17</option><option value="9">酉 17-19</option>
           <option value="10">戌 19-21</option><option value="11">亥 21-23</option>
         </select>
-        <label style="flex:0 0 48px">性别</label>
-        <select id="gender"><option value="m">男</option><option value="f">女</option></select>
+        <label style="flex:0 0 48px" data-i18n="ziwei_gender">性别</label>
+        <select id="gender"><option value="m" data-i18n="ziwei_male">男</option><option value="f" data-i18n="ziwei_female">女</option></select>
       </div>
-      <button class="gen-btn" onclick="generate()">排 命 盘</button>
+      <button class="gen-btn" onclick="generate()" data-i18n="ziwei_calc">排 命 盘</button>
       <p class="form-note">※ 以农历生日为准，不确定可用万年历换算</p>
     </div>
   </div>
@@ -786,8 +824,8 @@ footer a{color:var(--t3);text-decoration:none}
 <div class="div-wrap">
   <div class="div-hero">
     <span class="div-icon">☯</span>
-    <h1>起卦占卜</h1>
-    <p>铜钱起卦 · 梅花易数 · 六十四卦推演</p>
+    <h1 data-i18n="nav_qigua">起卦占卜</h1>
+    <p data-i18n="qigua_subtitle">铜钱起卦 · 梅花易数 · 六十四卦推演</p>
   </div>
 
   <!-- STEP 1: 输入 -->
@@ -795,7 +833,7 @@ footer a{color:var(--t3);text-decoration:none}
     <div class="card" style="padding:24px">
       <div class="form-row" style="margin-bottom:18px">
         <label>所问之事</label>
-        <input type="text" id="dv-q" placeholder="如：近期事业发展如何？是否适合换工作？" style="flex:1;background:rgba(255,255,255,.03);color:var(--t1);border:1px solid var(--b1);border-radius:8px;padding:10px 14px;font-family:inherit;font-size:.86rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--b1)'">
+        <input type="text" id="dv-q" placeholder="如：近期事业发展如何？是否适合换工作？" data-i18n="qigua_question_placeholder" style="flex:1;background:rgba(255,255,255,.03);color:var(--t1);border:1px solid var(--b1);border-radius:8px;padding:10px 14px;font-family:inherit;font-size:.86rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--b1)'">
       </div>
       <div style="font-size:.74rem;color:var(--t2);margin-bottom:8px;letter-spacing:.05em">问题类型</div>
       <div class="qtype-grid">
@@ -811,7 +849,7 @@ footer a{color:var(--t3);text-decoration:none}
         <input type="number" id="dv-yr" placeholder="如 1990（可选，提高准确度）" style="flex:1;background:rgba(255,255,255,.03);color:var(--t1);border:1px solid var(--b1);border-radius:8px;padding:8px 12px;font-family:inherit;font-size:.82rem;outline:none">
       </div>
       <p class="form-note" style="margin-bottom:14px">※ 问卦前请心存诚意，默念所问之事</p>
-      <button class="gen-btn" onclick="dvGoStep2()">进入起卦</button>
+      <button class="gen-btn" onclick="dvGoStep2()" data-i18n="qigua_go">进入起卦</button>
     </div>
   </div>
 
@@ -819,9 +857,9 @@ footer a{color:var(--t3);text-decoration:none}
   <div id="dv-s2" class="div-step">
     <div id="dv-qdisplay" class="qdisplay"></div>
     <div class="method-bar">
-      <button class="meth-btn sel" onclick="dvSetMethod('coin',this)">🪙 铜钱起卦</button>
-      <button class="meth-btn" onclick="dvSetMethod('time',this)">⏱ 时间起卦</button>
-      <button class="meth-btn" onclick="dvSetMethod('number',this)">🔢 数字起卦</button>
+      <button class="meth-btn sel" onclick="dvSetMethod('coin',this)" data-i18n="qigua_method_coin">🪙 铜钱起卦</button>
+      <button class="meth-btn" onclick="dvSetMethod('time',this)" data-i18n="qigua_method_time">⏱ 时间起卦</button>
+      <button class="meth-btn" onclick="dvSetMethod('number',this)" data-i18n="qigua_method_number">🔢 数字起卦</button>
     </div>
 
     <!-- 铜钱 -->
@@ -845,7 +883,7 @@ footer a{color:var(--t3);text-decoration:none}
         <div class="coin" id="dvc3"><div class="cface cfront">正</div><div class="cface cback">反</div></div>
       </div>
       <div class="round-txt" id="dv-rnd">第一爻（从下往上起卦）</div>
-      <button class="toss-btn" id="dv-toss" onclick="dvToss()">投 掷</button>
+      <button class="toss-btn" id="dv-toss" onclick="dvToss()" data-i18n="qigua_shake">投 掷</button>
       <div style="font-size:.72rem;color:var(--t3);margin-top:8px;min-height:18px" id="dv-cres"></div>
     </div>
 
@@ -895,7 +933,7 @@ footer a{color:var(--t3);text-decoration:none}
 </div>
 
 <footer>
-  <p>© <a href="https://sandlabs.cn/ziwei/" rel="noopener">太来才 · 紫微易学</a></p>
+  <p data-i18n="footer_text">© <a href="https://sandlabs.cn/ziwei/" rel="noopener">太来才 · 紫微易学</a></p>
   <p style="margin-top:4px">基于倪海夏紫微斗数推演法 · 结合易经第一性原理解析</p>
   <p style="margin-top:8px;font-size:.65rem;opacity:.5">本站内容仅供参考，命运掌握在自己手中</p>
 </footer>
@@ -2057,6 +2095,161 @@ window.dvByTime=dvByTime;window.dvByNumbers=dvByNumbers;
   }, 900 + Math.random()*400);
 
 })(); // end BAGUA LOGO ANIMATION
+</script>
+
+<script>
+// ========== 多语言 i18n 系统 ==========
+const I18N = {
+  zh: {
+    pageTitle: '太来才 · 紫微易学 | 紫微斗数命盘 · 易经占卜',
+    nav_ziwei: '✦ 紫微命盘',
+    nav_intro: '易经导论',
+    nav_wuxing: '五行八卦',
+    nav_tiangan: '天干地支',
+    nav_liushisi: '六十四卦',
+    nav_qigua: '☯ 起卦占卜',
+    intro_title: '太来才',
+    intro_subtitle: '紫微 · 易经 · 命运推演',
+    intro_unlock: '── 点击任意处，解开命运之门 ──',
+    qigua_subtitle: '铜钱起卦 · 梅花易数 · 六十四卦推演',
+    ziwei_title: '紫微斗数',
+    ziwei_birth_year: '出生年',
+    ziwei_birth_month: '农历月',
+    ziwei_birth_day: '农历日',
+    ziwei_birth_hour: '时辰',
+    ziwei_gender: '性别',
+    ziwei_male: '男',
+    ziwei_female: '女',
+    ziwei_calc: '排 命 盘',
+    qigua_question_placeholder: '如：近期事业发展如何？是否适合换工作？',
+    qigua_method_coin: '🪙 铜钱起卦',
+    qigua_method_time: '⏱ 时间起卦',
+    qigua_method_number: '🔢 数字起卦',
+    qigua_shake: '投 掷',
+    qigua_go: '进入起卦',
+    qigua_result_title: '卦象解析',
+    footer_text: '© 太来才 · 紫微易学',
+    loading: '推演中...',
+    error_input: '请填写完整信息',
+  },
+  en: {
+    pageTitle: 'TaiLaiCai · I Ching & Zi Wei | Purple Star Astrology · Divination',
+    nav_ziwei: '✦ Zi Wei Chart',
+    nav_intro: 'I Ching Intro',
+    nav_wuxing: 'Five Elements',
+    nav_tiangan: 'Heavenly Stems',
+    nav_liushisi: '64 Hexagrams',
+    nav_qigua: '☯ Divination',
+    intro_title: 'TaiLaiCai',
+    intro_subtitle: 'Purple Star · Five Elements · Eight Trigrams',
+    intro_unlock: '── Click anywhere to enter ──',
+    qigua_subtitle: 'Coin Method · Plum Blossom · 64 Hexagrams',
+    ziwei_title: 'Zi Wei Dou Shu',
+    ziwei_birth_year: 'Birth Year',
+    ziwei_birth_month: 'Lunar Month',
+    ziwei_birth_day: 'Lunar Day',
+    ziwei_birth_hour: 'Birth Hour',
+    ziwei_gender: 'Gender',
+    ziwei_male: 'Male',
+    ziwei_female: 'Female',
+    ziwei_calc: 'Calculate',
+    qigua_question_placeholder: 'Enter your question for divination...',
+    qigua_method_coin: '🪙 Coin Method',
+    qigua_method_time: '⏱ Time Method',
+    qigua_method_number: '🔢 Number Method',
+    qigua_shake: 'Cast',
+    qigua_go: 'Start Divination',
+    qigua_result_title: 'Hexagram Reading',
+    footer_text: '© TaiLaiCai · Yi Xue Divination Platform',
+    loading: 'Calculating...',
+    error_input: 'Please fill in all fields',
+  },
+  ja: {
+    pageTitle: 'タイライツァイ · 易学 | 紫微斗数命盤 · 易経占い',
+    nav_ziwei: '✦ 紫微命盤',
+    nav_intro: '易経導論',
+    nav_wuxing: '五行八卦',
+    nav_tiangan: '天干地支',
+    nav_liushisi: '六十四卦',
+    nav_qigua: '☯ 卦占い',
+    intro_title: 'タイライツァイ',
+    intro_subtitle: '紫微斗数 · 五行 · 八卦',
+    intro_unlock: '── どこでもタップして入る ──',
+    qigua_subtitle: '銅銭法 · 梅花易数 · 六十四卦推演',
+    ziwei_title: '紫微斗数',
+    ziwei_birth_year: '生年',
+    ziwei_birth_month: '旧暦月',
+    ziwei_birth_day: '旧暦日',
+    ziwei_birth_hour: '生まれ時辰',
+    ziwei_gender: '性別',
+    ziwei_male: '男',
+    ziwei_female: '女',
+    ziwei_calc: '命盤を作る',
+    qigua_question_placeholder: '占いたいことを入力してください...',
+    qigua_method_coin: '🪙 銅銭法',
+    qigua_method_time: '⏱ 時間法',
+    qigua_method_number: '🔢 数字法',
+    qigua_shake: '卦を立てる',
+    qigua_go: '占い開始',
+    qigua_result_title: '卦象解析',
+    footer_text: '© タイライツァイ · 易学推演プラットフォーム',
+    loading: '推演中...',
+    error_input: '全ての項目を入力してください',
+  }
+};
+
+let currentLang = localStorage.getItem('yixue_lang') || 'zh';
+
+function applyI18n(lang) {
+  currentLang = lang;
+  localStorage.setItem('yixue_lang', lang);
+  const t = I18N[lang];
+  if (!t) return;
+
+  // 更新页面标题
+  document.title = t.pageTitle;
+
+  // 更新所有带 data-i18n 属性的元素
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+
+  // footer 特殊处理：含 <a> 标签，仅更新文本节点
+  const footerP = document.querySelector('footer p[data-i18n="footer_text"]');
+  if (footerP && t.footer_text) {
+    const link = footerP.querySelector('a');
+    if (link) {
+      footerP.childNodes[0].textContent = '';
+      link.textContent = t.footer_text;
+    }
+  }
+
+  // 更新语言按钮状态
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+
+  // 更新 <html lang> 属性
+  const langMap = { zh: 'zh-CN', en: 'en', ja: 'ja' };
+  document.documentElement.lang = langMap[lang] || lang;
+}
+
+// 语言切换按钮事件
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyI18n(btn.dataset.lang));
+  });
+  // 初始化语言
+  applyI18n(currentLang);
+});
+// ========== i18n 结束 ==========
 </script>
 </body>
 </html>
