@@ -1,0 +1,227 @@
+<scroll-view scroll-y class="page-wrap">
+  <!-- 表单 -->
+  <view class="form-wrap">
+    <view class="form-title">
+      <text class="title-main">紫微斗数</text>
+      <text class="title-sub">倪海夏推演法 · 结合易经五行解析</text>
+    </view>
+
+    <view class="card">
+      <view class="form-row">
+        <text class="label">出生年</text>
+        <input type="number" class="form-input" value="{{year}}" bindinput="onYearChange" style="max-width:180rpx" />
+        <text class="hint">阳历（正月前-1）</text>
+      </view>
+
+      <view class="form-row">
+        <text class="label">农历月</text>
+        <picker mode="selector" range="{{months}}" value="{{monthIdx}}" bindchange="onMonthChange">
+          <view class="form-input picker-text">{{months[monthIdx]}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="label">农历日</text>
+        <picker mode="selector" range="{{days}}" value="{{dayIdx}}" bindchange="onDayChange">
+          <view class="form-input picker-text">{{days[dayIdx]}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="label">时辰</text>
+        <picker mode="selector" range="{{hours}}" value="{{hourIdx}}" bindchange="onHourChange">
+          <view class="form-input picker-text">{{hours[hourIdx]}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="label">性别</text>
+        <picker mode="selector" range="{{genders}}" value="{{genderIdx}}" bindchange="onGenderChange">
+          <view class="form-input picker-text">{{genders[genderIdx]}}</view>
+        </picker>
+      </view>
+
+      <view class="gen-btn" bindtap="onGenerate">排 命 盘</view>
+      <text class="form-note">※ 以农历生日为准，不确定可用万年历换算</text>
+    </view>
+  </view>
+
+  <!-- 命盘结果 -->
+  <block wx:if="{{showChart}}">
+    <view class="chart-title">{{chartTitle}}</view>
+
+    <!-- 4x4命盘网格 -->
+    <view class="chart-grid">
+      <!-- 第一行：5 6 7 8 -->
+      <view wx:for="{{topRow}}" wx:key="p" class="cell {{item.im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{item.p}}">
+        <text class="pname {{item.im ? 'ml' : ''}}">{{item.piName}}</text>
+        <text class="gz">{{item.tgDz}}</text>
+        <text wx:if="{{item.is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{item.msn}}" wx:key="*this" wx:for-item="star" class="s {{item.starClass[index]}}">{{star}} </text>
+          <text wx:for="{{item.hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{item.axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{item.dxs}}-{{item.dxs + 9}}岁</text>
+      </view>
+
+      <!-- 第二行：4 center center 9 -->
+      <view class="cell {{leftCells[0].im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{leftCells[0].p}}">
+        <text class="pname {{leftCells[0].im ? 'ml' : ''}}">{{leftCells[0].piName}}</text>
+        <text class="gz">{{leftCells[0].tgDz}}</text>
+        <text wx:if="{{leftCells[0].is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{leftCells[0].msn}}" wx:key="*this" wx:for-item="star" class="s {{leftCells[0].starClass[index]}}">{{star}} </text>
+          <text wx:for="{{leftCells[0].hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{leftCells[0].axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{leftCells[0].dxs}}-{{leftCells[0].dxs + 9}}岁</text>
+      </view>
+
+      <!-- 中宫 (占2x2) -->
+      <view class="cell-center">
+        <text class="cn">{{centerInfo.title}}</text>
+        <text class="cr">生年：<text class="gold">{{centerInfo.birthYear}}</text></text>
+        <text class="cr">命宫：<text class="gold">{{centerInfo.mingGong}}</text></text>
+        <text class="cr">身宫：<text class="gold">{{centerInfo.shenGong}}</text></text>
+        <text class="cr">大限：<text class="gold">{{centerInfo.daxian}}</text></text>
+        <text class="jb jb-{{centerInfo.j}}">{{centerInfo.juName}}</text>
+      </view>
+
+      <view class="cell {{rightCells[0].im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{rightCells[0].p}}">
+        <text class="pname {{rightCells[0].im ? 'ml' : ''}}">{{rightCells[0].piName}}</text>
+        <text class="gz">{{rightCells[0].tgDz}}</text>
+        <text wx:if="{{rightCells[0].is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{rightCells[0].msn}}" wx:key="*this" wx:for-item="star" class="s {{rightCells[0].starClass[index]}}">{{star}} </text>
+          <text wx:for="{{rightCells[0].hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{rightCells[0].axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{rightCells[0].dxs}}-{{rightCells[0].dxs + 9}}岁</text>
+      </view>
+
+      <!-- 第三行：3 center center 10 -->
+      <view class="cell {{leftCells[1].im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{leftCells[1].p}}">
+        <text class="pname {{leftCells[1].im ? 'ml' : ''}}">{{leftCells[1].piName}}</text>
+        <text class="gz">{{leftCells[1].tgDz}}</text>
+        <text wx:if="{{leftCells[1].is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{leftCells[1].msn}}" wx:key="*this" wx:for-item="star" class="s {{leftCells[1].starClass[index]}}">{{star}} </text>
+          <text wx:for="{{leftCells[1].hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{leftCells[1].axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{leftCells[1].dxs}}-{{leftCells[1].dxs + 9}}岁</text>
+      </view>
+
+      <view class="cell {{rightCells[1].im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{rightCells[1].p}}">
+        <text class="pname {{rightCells[1].im ? 'ml' : ''}}">{{rightCells[1].piName}}</text>
+        <text class="gz">{{rightCells[1].tgDz}}</text>
+        <text wx:if="{{rightCells[1].is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{rightCells[1].msn}}" wx:key="*this" wx:for-item="star" class="s {{rightCells[1].starClass[index]}}">{{star}} </text>
+          <text wx:for="{{rightCells[1].hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{rightCells[1].axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{rightCells[1].dxs}}-{{rightCells[1].dxs + 9}}岁</text>
+      </view>
+
+      <!-- 第四行：2 1 0 11 -->
+      <view wx:for="{{bottomRow}}" wx:key="p" class="cell {{item.im ? 'ming' : ''}}" bindtap="onCellTap" data-idx="{{item.p}}">
+        <text class="pname {{item.im ? 'ml' : ''}}">{{item.piName}}</text>
+        <text class="gz">{{item.tgDz}}</text>
+        <text wx:if="{{item.is}}" class="shen-mk">身</text>
+        <view class="stars-wrap">
+          <text wx:for="{{item.msn}}" wx:key="*this" wx:for-item="star" class="s {{item.starClass[index]}}">{{star}} </text>
+          <text wx:for="{{item.hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.l}}</text>
+          <text wx:for="{{item.axH}}" wx:key="n" wx:for-item="a" class="s ax-star">{{a.n}} </text>
+        </view>
+        <text class="dx">{{item.dxs}}-{{item.dxs + 9}}岁</text>
+      </view>
+    </view>
+
+    <!-- 解读部分 -->
+    <view class="interp-section">
+      <view class="isec">
+        <text class="isec-title">命宫解析 · 倪海夏论命法</text>
+        <view class="igrid">
+          <view wx:for="{{interp.mingItems}}" wx:key="title" class="iitem">
+            <text class="title">{{item.title}}</text>
+            <text class="desc">{{item.desc}}</text>
+            <view wx:if="{{item.gua}}" class="ybox">
+              <text class="yg">{{item.gua.g}}</text>
+              <view class="yt">
+                <text class="strong">{{item.gua.n}}</text>
+                <text>\n{{item.gua.m}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="isec">
+        <text class="isec-title">三方四正 · 财官迁命</text>
+        <view class="igrid">
+          <view wx:for="{{interp.sanfangItems}}" wx:key="title" class="iitem">
+            <text class="title">{{item.title}}</text>
+            <text class="desc">主星：{{item.msn}}</text>
+            <view wx:if="{{item.hH.length}}" class="hua-wrap">
+              <text>四化：</text>
+              <text wx:for="{{item.hH}}" wx:key="l" wx:for-item="h" class="hua {{h.c}}">{{h.s}}{{h.l}} </text>
+            </view>
+            <text class="note">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="isec">
+        <text class="isec-title">四化所在 · 命运着力点</text>
+        <view class="igrid">
+          <view wx:for="{{interp.sihuaItems}}" wx:key="title" class="iitem">
+            <text class="title">{{item.title}}</text>
+            <text class="desc">{{item.desc}}</text>
+            <text class="quote">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="isec">
+        <text class="isec-title">易经启示 · 五行卦象</text>
+        <view class="igrid">
+          <view wx:for="{{interp.yijingItems}}" wx:key="title" class="iitem">
+            <text class="title">{{item.title}}</text>
+            <text class="desc">{{item.desc}}</text>
+            <text wx:if="{{item.sub}}" class="sub-note">{{item.sub}}</text>
+            <view wx:if="{{item.gua}}" class="ybox">
+              <text class="yg">{{item.gua.g}}</text>
+              <text class="yt">{{item.gua.m}}</text>
+            </view>
+            <text wx:if="{{item.note}}" class="quote">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 弹窗 -->
+  <view wx:if="{{showPopup}}" class="modal-mask" bindtap="closePopup"></view>
+  <view wx:if="{{showPopup}}" class="modal-content">
+    <text class="modal-close" bindtap="closePopup">✕</text>
+    <text class="popup-title">{{popup.title}}</text>
+    <text class="popup-daxian">大限：{{popup.dxs}}–{{popup.dxs + 9}}岁</text>
+    <view wx:if="{{popup.msn.length > 0}}">
+      <text class="popup-label">主星：{{popup.msnText}}</text>
+      <view wx:for="{{popup.starDescs}}" wx:key="name">
+        <text class="popup-star-desc">▸ {{item.name}}：{{item.desc}}</text>
+      </view>
+    </view>
+    <text wx:else class="popup-empty">空宫 — 参看对宫。</text>
+    <view wx:if="{{popup.hH.length > 0}}" class="popup-hua-wrap">
+      <text>四化：</text>
+      <text wx:for="{{popup.hH}}" wx:key="l" class="hua {{item.c}}">{{item.s}}{{item.l}} </text>
+    </view>
+    <view wx:if="{{popup.axH.length > 0}}">
+      <text class="popup-label">辅星：{{popup.axText}}</text>
+    </view>
+    <text class="popup-note">{{popup.note}}</text>
+  </view>
+</scroll-view>

@@ -1,0 +1,10 @@
+.sub-tabs-scroll { white-space: nowrap; margin-bottom: 16rpx; }
+.body-text { display: block; font-size: 28rpx; color: #7880a8; line-height: 1.92; margin-bottom: 16rpx; }
+.gold-text { color: #c8a882; }
+.tags-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12rpx; margin: 16rpx 0; justify-content: center; }
+.wx-arr { color: #3e4062; font-size: 28rpx; }
+.header { background: rgba(255,255,255,0.03); }
+
+/* 居中内容区 */
+.section { max-width: 700rpx; margin-left: auto; margin-right: auto; }
+.hero { max-width: 700rpx; margin-left: auto; margin-right: auto; }

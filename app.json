@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/intro/intro",
+    "pages/ziwei/ziwei",
+    "pages/knowledge/knowledge",
+    "pages/hexagrams/hexagrams",
+    "pages/divination/divination"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#09090f",
+    "navigationBarTitleText": "泰来才 · 紫微易学",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#09090f",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#3e4062",
+    "selectedColor": "#c8a882",
+    "backgroundColor": "#0d0e1a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/ziwei/ziwei",
+        "text": "紫微命盘",
+        "iconPath": "images/icon-ziwei.png",
+        "selectedIconPath": "images/icon-ziwei-active.png"
+      },
+      {
+        "pagePath": "pages/knowledge/knowledge",
+        "text": "易学知识",
+        "iconPath": "images/icon-book.png",
+        "selectedIconPath": "images/icon-book-active.png"
+      },
+      {
+        "pagePath": "pages/hexagrams/hexagrams",
+        "text": "六十四卦",
+        "iconPath": "images/icon-gua.png",
+        "selectedIconPath": "images/icon-gua-active.png"
+      },
+      {
+        "pagePath": "pages/divination/divination",
+        "text": "起卦占卜",
+        "iconPath": "images/icon-div.png",
+        "selectedIconPath": "images/icon-div-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

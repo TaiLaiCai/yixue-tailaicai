@@ -1,0 +1,55 @@
+<scroll-view scroll-y class="page-wrap">
+  <view class="hero">
+    <text class="big-icon">64</text>
+    <text class="hero-title">六十四卦</text>
+    <text class="hero-desc">情境手册：8² = 64种人与环境的关系模式</text>
+  </view>
+
+  <view class="section">
+    <text class="section-title">第一性原理</text>
+    <text class="body-text">八卦（8种情境）两两相叠 = 8² = 64种变化情境。每一卦描述一种人与环境的关系状态，以及在这种状态下的应对智慧。</text>
+    <view class="igrid">
+      <view class="iitem"><text class="title">上卦（外卦）</text><text class="desc">外部环境、他人、结果</text></view>
+      <view class="iitem"><text class="title">下卦（内卦）</text><text class="desc">内部状态、自己、原因</text></view>
+    </view>
+    <text class="quote">举例：乾上坤下 = 否卦（天地相背，不通）；坤上乾下 = 泰卦（地天相交，亨通）。</text>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索卦名..." bindinput="onSearch" value="{{searchText}}" />
+  </view>
+
+  <!-- 64卦列表 -->
+  <view class="section">
+    <text class="section-title">64卦速查（点击展开）</text>
+
+    <block wx:for="{{filteredData}}" wx:key="cat">
+      <text class="cat-label">▸ {{item.cat}}</text>
+      <view class="gua-grid">
+        <view wx:for="{{item.list}}" wx:key="n" wx:for-item="gua"
+          class="gua-card {{gua.open ? 'open' : ''}}"
+          bindtap="toggleGua" data-cat="{{index}}" data-n="{{gua.n}}">
+          <text class="gnum">{{gua.n}}</text>
+          <text class="gname">{{gua.name}}</text>
+          <text class="gmean">{{gua.mean}}</text>
+          <view wx:if="{{gua.open}}" class="gmsg">
+            <text>↳ {{gua.msg}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底层逻辑 -->
+  <view class="section">
+    <text class="section-title">底层逻辑</text>
+    <view class="igrid">
+      <view class="iitem"><text class="title">情境公式</text><text class="desc">任何情境 = 上卦（外部）+ 下卦（内部）</text></view>
+      <view class="iitem"><text class="title">每卦含义</text><text class="desc">当前状态 + 最佳应对方式</text></view>
+      <view class="iitem"><text class="title">爻变原理</text><text class="desc">某一爻改变，卦变成另一卦——情境在流动，时刻变化。</text></view>
+      <view class="iitem"><text class="title">首尾相连</text><text class="desc">未济（64）之后回到乾（1），循环无终止。</text></view>
+    </view>
+    <text class="quote">64卦不是64个答案，而是64种"你在哪里、该怎么做"的场景手册。</text>
+  </view>
+</scroll-view>

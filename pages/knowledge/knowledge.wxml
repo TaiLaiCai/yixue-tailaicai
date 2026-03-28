@@ -1,0 +1,187 @@
+<scroll-view scroll-y class="page-wrap">
+  <!-- 子标签 -->
+  <scroll-view scroll-x class="sub-tabs-scroll">
+    <view class="sub-tabs">
+      <view class="sub-tab {{activeTab === 'yijing' ? 'active' : ''}}" bindtap="switchTab" data-tab="yijing">易经导论</view>
+      <view class="sub-tab {{activeTab === 'wuxing' ? 'active' : ''}}" bindtap="switchTab" data-tab="wuxing">五行八卦</view>
+      <view class="sub-tab {{activeTab === 'ganzhi' ? 'active' : ''}}" bindtap="switchTab" data-tab="ganzhi">天干地支</view>
+    </view>
+  </scroll-view>
+
+  <!-- ══ 易经导论 ══ -->
+  <block wx:if="{{activeTab === 'yijing'}}">
+    <view class="hero">
+      <text class="big-icon">☯</text>
+      <text class="hero-title">易经核心思想</text>
+      <text class="hero-desc">《易经》的核心，不是占卜本身，而是对"变化"这件事的理解与应对。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">一句话概括</text>
+      <text class="body-text">世界始终在变化，人的关键能力不是对抗变化，而是观察形势、把握时机、顺势调整自己。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">七个核心观点</text>
+      <view class="concept-grid">
+        <view class="iitem"><text class="title">1. 变易</text><text class="desc">万事万物都在变化，没有绝对静止和永恒不变的状态。</text></view>
+        <view class="iitem"><text class="title">2. 阴阳</text><text class="desc">任何事物都包含相反又相依的两面：刚与柔、进与退、盛与衰。</text></view>
+        <view class="iitem"><text class="title">3. 时位</text><text class="desc">同样的做法，放在不同时间、位置下结果完全不同。</text></view>
+        <view class="iitem"><text class="title">4. 中正</text><text class="desc">最好的状态通常不是极端，而是适度、平衡、守分寸。</text></view>
+        <view class="iitem"><text class="title">5. 顺势</text><text class="desc">不是硬碰硬，而是顺着规律和局势调整行动。</text></view>
+        <view class="iitem"><text class="title">6. 修养</text><text class="desc">外部局势变化的同时，心态、德行需要不断修正。</text></view>
+        <view class="iitem"><text class="title">7. 趋吉避凶</text><text class="desc">通过观察、预判和调整，减少风险，争取更好的结果。</text></view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">关键词提炼</text>
+      <view class="tags-row">
+        <text class="wx-item wx-mu">变化</text>
+        <text class="wx-item wx-huo">阴阳</text>
+        <text class="wx-item wx-tu">时机</text>
+        <text class="wx-item wx-jin">平衡</text>
+        <text class="wx-item wx-shui">顺势</text>
+        <text class="wx-item wx-mu">修身</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">现代理解：动态决策思维</text>
+      <text class="body-text">如果用现代语言解释，《易经》更像一套"动态决策框架"：</text>
+      <view class="bagua-row">
+        <view class="bagua-item"><text class="sym">👁</text><text class="bname">先看环境</text></view>
+        <view class="bagua-item"><text class="sym">🔗</text><text class="bname">再看关系</text></view>
+        <view class="bagua-item"><text class="sym">⏱</text><text class="bname">再看时机</text></view>
+        <view class="bagua-item"><text class="sym">⚡</text><text class="bname">决定行动</text></view>
+      </view>
+      <text class="quote">真正重要的不是死守一个答案，而是根据变化持续调整。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">与紫微斗数的关联</text>
+      <text class="body-text">紫微斗数是易经思想的具体化应用：命盘呈现的是你所处的"时位"——你天生的性格底色（命宫）、此刻的运势阶段（大限流年），以及如何顺势而为。</text>
+      <text class="body-text gold-text">化忌不是坏运，是"执念"所在，对应易经的"坎卦"——习坎，有孚，维心亨。心正则险难可过。</text>
+    </view>
+  </block>
+
+  <!-- ══ 五行八卦 ══ -->
+  <block wx:if="{{activeTab === 'wuxing'}}">
+    <view class="hero">
+      <text class="big-icon">☰☷☳☴☲☵☶☱</text>
+      <text class="hero-title">五行八卦</text>
+      <text class="hero-desc">信息编码（阴阳三层叠加）+ 状态分类（运动模式）</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">第一性原理</text>
+      <text class="body-text">阴阳是最小单位（0和1），八卦是阴阳的三层叠加（2³=8），五行是对万物运动状态的五种分类。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">八卦：8种基本情境</text>
+      <view class="bagua-row">
+        <view class="bagua-item"><text class="sym">☰</text><text class="bname">乾 · 天</text><text class="bdesc">纯阳，刚健，极度主动</text></view>
+        <view class="bagua-item"><text class="sym">☷</text><text class="bname">坤 · 地</text><text class="bdesc">纯阴，柔顺，极度承载</text></view>
+        <view class="bagua-item"><text class="sym">☳</text><text class="bname">震 · 雷</text><text class="bdesc">阳动于下，启动冲劲</text></view>
+        <view class="bagua-item"><text class="sym">☶</text><text class="bname">艮 · 山</text><text class="bdesc">阳止于上，静止收敛</text></view>
+        <view class="bagua-item"><text class="sym">☲</text><text class="bname">离 · 火</text><text class="bdesc">阳外阴内，附着明亮</text></view>
+        <view class="bagua-item"><text class="sym">☵</text><text class="bname">坎 · 水</text><text class="bdesc">阴外阳内，陷入险境</text></view>
+        <view class="bagua-item"><text class="sym">☴</text><text class="bname">巽 · 风</text><text class="bdesc">阴伏于下，渗透顺从</text></view>
+        <view class="bagua-item"><text class="sym">☱</text><text class="bname">兑 · 泽</text><text class="bdesc">阴出于上，喜悦开口</text></view>
+      </view>
+      <text class="quote">记忆口诀：乾三连，坤六断，震仰盂，艮覆碗，离中虚，坎中满，兑上缺，巽下断。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">五行：5种运动状态</text>
+      <view wx:for="{{wuxingData}}" wx:key="name" class="tbl-row">
+        <text class="tbl-cell" style="color:{{item.color}};flex:0 0 60rpx">{{item.name}}</text>
+        <text class="tbl-cell">{{item.trait}}</text>
+        <text class="tbl-cell">{{item.nature}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">相生：促进关系</text>
+      <view class="tags-row">
+        <text class="wx-item wx-mu">木</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-huo">火</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-tu">土</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-jin">金</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-shui">水</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-mu">木</text>
+      </view>
+      <text class="quote">木燃生火，火烬成土，土聚成金，金融成水，水滋养木。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">相克：制约关系</text>
+      <view class="tags-row">
+        <text class="wx-item wx-mu">木</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-tu">土</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-shui">水</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-huo">火</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-jin">金</text><text class="wx-arr">→</text>
+        <text class="wx-item wx-mu">木</text>
+      </view>
+      <text class="quote">木扎入土，土阻断水，水灭掉火，火熔化金，金砍断木。</text>
+    </view>
+  </block>
+
+  <!-- ══ 天干地支 ══ -->
+  <block wx:if="{{activeTab === 'ganzhi'}}">
+    <view class="hero">
+      <text class="big-icon" style="font-size:44rpx">甲乙丙丁戊己庚辛壬癸</text>
+      <text class="hero-title">天干地支</text>
+      <text class="hero-desc">时间坐标系：10×12=60，循环记录年月日时</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">第一性原理</text>
+      <text class="body-text">天干地支是古人发明的时间坐标系：用10个天干 × 12个地支，组合出60个不重复的计时单位，循环记录年、月、日、时。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">十天干</text>
+      <view class="tbl-row header">
+        <text class="tbl-cell" style="flex:0 0 60rpx">#</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx">干</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx">阴阳</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx">五行</text>
+        <text class="tbl-cell">含义</text>
+      </view>
+      <view wx:for="{{tianganData}}" wx:key="gan" class="tbl-row">
+        <text class="tbl-cell" style="flex:0 0 60rpx;color:#3e4062">{{item.num}}</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx;color:{{item.yy === '阳' ? '#d0925a' : '#6898d8'}}">{{item.gan}}</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx">{{item.yy}}</text>
+        <text class="tbl-cell" style="flex:0 0 60rpx">{{item.wx}}</text>
+        <text class="tbl-cell">{{item.mean}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">十二地支</text>
+      <view class="tbl-row header">
+        <text class="tbl-cell" style="flex:0 0 50rpx">#</text>
+        <text class="tbl-cell" style="flex:0 0 50rpx">支</text>
+        <text class="tbl-cell" style="flex:0 0 70rpx">生肖</text>
+        <text class="tbl-cell">时辰</text>
+        <text class="tbl-cell" style="flex:0 0 80rpx">月份</text>
+      </view>
+      <view wx:for="{{dizhiData}}" wx:key="zhi" class="tbl-row">
+        <text class="tbl-cell" style="flex:0 0 50rpx;color:#3e4062">{{item.num}}</text>
+        <text class="tbl-cell" style="flex:0 0 50rpx">{{item.zhi}}</text>
+        <text class="tbl-cell" style="flex:0 0 70rpx">{{item.sx}}</text>
+        <text class="tbl-cell">{{item.time}}</text>
+        <text class="tbl-cell" style="flex:0 0 80rpx">{{item.month}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">六十甲子：组合逻辑</text>
+      <text class="body-text">天干（10）× 地支（12）的最小公倍数 = 60，所以每60年（天）一个完整循环。</text>
+      <text class="quote">组合规则：同为奇数配奇数（阳干配阳支），偶数配偶数（阴干配阴支）。</text>
+    </view>
+  </block>
+</scroll-view>

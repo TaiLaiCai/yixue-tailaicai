@@ -1,0 +1,214 @@
+.intro {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #0e1028 0%, #06070d 70%);
+  overflow: hidden;
+}
+
+/* 星空 */
+.stars { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(200, 210, 255, 0.8);
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  from { opacity: 0.2; }
+  to { opacity: 0.8; }
+}
+
+/* 八卦环 */
+.bagua-ring {
+  position: relative;
+  width: 580rpx;
+  height: 580rpx;
+  margin-bottom: 48rpx;
+}
+
+.ring-halo {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 500rpx; height: 500rpx;
+  margin-left: -250rpx; margin-top: -250rpx;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(154,171,255,0.13) 12%,
+    rgba(200,168,130,0.09) 26%,
+    transparent 40%,
+    rgba(154,171,255,0.07) 58%,
+    rgba(200,210,255,0.11) 74%,
+    transparent 88%
+  );
+  animation: halo-spin 9s linear infinite;
+}
+@keyframes halo-spin { to { transform: rotate(360deg); } }
+
+.ring-glow {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 560rpx; height: 560rpx;
+  margin-left: -280rpx; margin-top: -280rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 38%, rgba(154,171,255,0.06) 52%, rgba(200,168,130,0.04) 64%, transparent 74%);
+  animation: glow-breath 3.4s ease-in-out infinite alternate;
+}
+@keyframes glow-breath {
+  from { opacity: 0.5; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+.ring-track {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 460rpx; height: 460rpx;
+  margin-left: -230rpx; margin-top: -230rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(160,170,230,0.10);
+}
+
+/* 八卦节点 */
+.gua-node {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 100rpx; height: 100rpx;
+  margin-left: -50rpx; margin-top: -50rpx;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(154,171,255,0.04);
+  border: 1rpx solid rgba(154,171,255,0.14);
+  transition: all 0.4s;
+}
+.gua-node.lit {
+  border-color: rgba(154,171,255,0.55);
+  background: rgba(154,171,255,0.08);
+  box-shadow: 0 0 28rpx rgba(154,171,255,0.55), 0 0 60rpx rgba(154,171,255,0.22);
+}
+.gua-node .gsym { font-size: 40rpx; line-height: 1; }
+.gua-node .gname { font-size: 20rpx; color: rgba(154,171,255,0.45); margin-top: 4rpx; }
+
+/* 太极 */
+.ring-center {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 144rpx; height: 144rpx;
+  margin-left: -72rpx; margin-top: -72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.taichi {
+  font-size: 96rpx;
+  color: rgba(220,228,255,0.5);
+  animation: taichi-pulse 4s ease-in-out infinite alternate;
+}
+@keyframes taichi-pulse {
+  from { filter: drop-shadow(0 0 18rpx rgba(154,171,255,0.25)); }
+  to { filter: drop-shadow(0 0 32rpx rgba(154,171,255,0.55)); }
+}
+.taichi-burst {
+  animation: none !important;
+  color: rgba(220,228,255,0.9);
+  font-size: 160rpx;
+  transition: all 0.4s;
+}
+
+/* 加速旋转 */
+.unlocking .ring-halo { animation: halo-spin 1s linear infinite; }
+.unlocking .gua-node {
+  border-color: rgba(154,171,255,0.55);
+  background: rgba(154,171,255,0.08);
+  box-shadow: 0 0 36rpx rgba(154,171,255,0.7);
+}
+
+/* 文字 */
+.intro-text { text-align: center; position: relative; z-index: 2; }
+.intro-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+/* 甲骨文水墨风 */
+.logo-ch {
+  display: inline-block;
+  font-family: 'MaShanZheng', 'STKaiti', 'KaiTi', '楷体', serif;
+  font-size: 100rpx;
+  font-weight: 900;
+  letter-spacing: 0.45em;
+  color: #f5e8c0;
+  transition: color 0.12s, text-shadow 0.12s;
+  /* 金色水墨浮雕 */
+  text-shadow:
+    0 0 24rpx rgba(212,175,55,1),
+    0 0 56rpx rgba(212,175,55,0.7),
+    0 0 96rpx rgba(180,130,20,0.4),
+    3rpx 4rpx 0rpx rgba(0,0,0,0.95),
+    4rpx 6rpx 12rpx rgba(0,0,0,0.85),
+    -2rpx -2rpx 4rpx rgba(0,0,0,0.7);
+  filter: drop-shadow(0 0 14rpx rgba(212,175,55,0.5));
+  animation: ink-breath 3s ease-in-out infinite alternate;
+}
+
+/* 阳闪 - 明亮金光 */
+.logo-ch.yang {
+  color: #fff;
+  text-shadow:
+    0 0 20rpx rgba(255,255,255,0.9),
+    0 0 40rpx rgba(200,210,255,0.5),
+    0 0 80rpx rgba(212,175,55,0.6);
+}
+
+/* 阴闪 - 暗影轮廓 */
+.logo-ch.yin {
+  color: rgba(20,20,35,0.9);
+  text-shadow:
+    0 0 12rpx rgba(154,171,255,0.4),
+    0 0 28rpx rgba(154,171,255,0.2);
+  -webkit-text-stroke: 1rpx rgba(154,171,255,0.4);
+}
+
+/* 水墨呼吸光效 */
+@keyframes ink-breath {
+  from {
+    filter: drop-shadow(0 0 10rpx rgba(212,175,55,0.3));
+    text-shadow:
+      0 0 18rpx rgba(212,175,55,0.8),
+      0 0 40rpx rgba(212,175,55,0.5),
+      3rpx 4rpx 0rpx rgba(0,0,0,0.95),
+      -2rpx -2rpx 4rpx rgba(0,0,0,0.7);
+  }
+  to {
+    filter: drop-shadow(0 0 20rpx rgba(212,175,55,0.7));
+    text-shadow:
+      0 0 28rpx rgba(212,175,55,1),
+      0 0 64rpx rgba(212,175,55,0.8),
+      0 0 100rpx rgba(180,130,20,0.5),
+      3rpx 4rpx 0rpx rgba(0,0,0,0.95),
+      4rpx 6rpx 12rpx rgba(0,0,0,0.85),
+      -2rpx -2rpx 4rpx rgba(0,0,0,0.7);
+  }
+}
+.intro-sub {
+  font-size: 26rpx;
+  letter-spacing: 0.3em;
+  color: #7880a8;
+  margin-bottom: 60rpx;
+}
+.unlock-hint {
+  font-size: 22rpx;
+  letter-spacing: 0.22em;
+  color: #3e4062;
+  animation: hint-blink 2.2s ease-in-out infinite;
+}
+@keyframes hint-blink { 0%,100% { opacity: 0.3; } 50% { opacity: 0.9; } }

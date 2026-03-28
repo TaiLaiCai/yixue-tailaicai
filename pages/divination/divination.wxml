@@ -1,0 +1,181 @@
+<scroll-view scroll-y class="page-wrap">
+  <view class="div-hero">
+    <text class="div-icon">☯</text>
+    <text class="div-title">起卦占卜</text>
+    <text class="div-sub">铜钱起卦 · 梅花易数 · 六十四卦推演</text>
+  </view>
+
+  <!-- STEP 1: 输入 -->
+  <block wx:if="{{step === 1}}">
+    <view class="card" style="padding:40rpx">
+      <view class="form-row" style="margin-bottom:28rpx">
+        <text class="label">所问之事</text>
+        <input class="form-input" placeholder="如：近期事业发展如何？" value="{{question}}" bindinput="onQuestionInput" />
+      </view>
+
+      <text class="field-label">问题类型</text>
+      <view class="qtype-grid">
+        <view wx:for="{{qtypes}}" wx:key="val"
+          class="qtype-btn {{qtype === item.val ? 'sel' : ''}}"
+          bindtap="onSelectQtype" data-val="{{item.val}}">
+          {{item.label}}
+        </view>
+      </view>
+
+      <view class="form-row" style="margin-bottom:8rpx">
+        <text class="label">出生年</text>
+        <input type="number" class="form-input" placeholder="如 1990（可选）" value="{{birthYear}}" bindinput="onBirthYearInput" />
+      </view>
+      <text class="form-note">※ 问卦前请心存诚意，默念所问之事</text>
+      <view class="gen-btn" bindtap="goStep2">进入起卦</view>
+    </view>
+  </block>
+
+  <!-- STEP 2: 起卦 -->
+  <block wx:if="{{step === 2}}">
+    <view class="qdisplay">「{{question}}」</view>
+
+    <!-- 方法选择 -->
+    <view class="method-bar">
+      <view class="meth-btn {{method === 'coin' ? 'sel' : ''}}" bindtap="setMethod" data-m="coin">🪙 铜钱起卦</view>
+      <view class="meth-btn {{method === 'time' ? 'sel' : ''}}" bindtap="setMethod" data-m="time">⏱ 时间起卦</view>
+      <view class="meth-btn {{method === 'number' ? 'sel' : ''}}" bindtap="setMethod" data-m="number">🔢 数字起卦</view>
+    </view>
+
+    <!-- 铜钱法 -->
+    <block wx:if="{{method === 'coin'}}">
+      <view class="coin-stage">
+        <view class="coin-row">
+          <view wx:for="{{coins}}" wx:key="index" class="coin {{item.spinning ? 'spin' : ''}}">
+            <text class="coin-face {{item.isHead ? 'coin-front' : 'coin-back'}}">{{item.isHead ? '正' : '反'}}</text>
+          </view>
+        </view>
+        <text class="round-txt">{{roundText}}</text>
+        <view class="toss-btn {{tossDisabled ? 'disabled' : ''}}" bindtap="onToss">投 掷</view>
+        <text class="cres-txt">{{coinResult}}</text>
+      </view>
+    </block>
+
+    <!-- 时间法 -->
+    <block wx:if="{{method === 'time'}}">
+      <view class="time-stage">
+        <text class="time-hint">以当前时间自动起卦（梅花易数时间法）</text>
+        <text class="time-display">{{timeDisplay}}</text>
+        <view class="toss-btn" bindtap="onTimeMethod">立即起卦</view>
+      </view>
+    </block>
+
+    <!-- 数字法 -->
+    <block wx:if="{{method === 'number'}}">
+      <view class="num-stage">
+        <text class="num-hint">输入心中浮现的两个数字（1-999），动爻可选</text>
+        <view class="num-row">
+          <view class="num-group">
+            <input type="number" class="num-inp" placeholder="数一" value="{{num1}}" bindinput="onNum1" />
+            <text class="num-lbl">上卦数</text>
+          </view>
+          <text class="num-plus">＋</text>
+          <view class="num-group">
+            <input type="number" class="num-inp" placeholder="数二" value="{{num2}}" bindinput="onNum2" />
+            <text class="num-lbl">下卦数</text>
+          </view>
+          <text class="num-plus">＋</text>
+          <view class="num-group">
+            <input type="number" class="num-inp" placeholder="动爻" value="{{num3}}" bindinput="onNum3" />
+            <text class="num-lbl">动爻（选）</text>
+          </view>
+        </view>
+        <view class="toss-btn" bindtap="onNumberMethod">推算卦象</view>
+      </view>
+    </block>
+
+    <!-- 爻线显示 -->
+    <view class="lines-wrap">
+      <view wx:for="{{displayLines}}" wx:key="index" class="hline {{item.show ? 'show' : ''}}">
+        <text class="lsym {{item.cls}}">{{item.sym}}</text>
+        <text class="llab">{{item.label}}</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- STEP 3: 结果 -->
+  <block wx:if="{{step === 3}}">
+    <view style="text-align:center;margin-bottom:32rpx">
+      <view class="toss-btn sec" bindtap="onReset">← 重新起卦</view>
+    </view>
+
+    <!-- 一、起卦信息 -->
+    <view class="out-sec">
+      <text class="sec-h3">一、起卦信息</text>
+      <view class="out-row"><text class="ol">问题</text><text class="ov">{{result.castInfo.question}}</text></view>
+      <view class="out-row"><text class="ol">起卦方式</text><text class="ov">{{result.castInfo.method}}</text></view>
+      <view class="out-row"><text class="ol">起卦时间</text><text class="ov">{{result.castInfo.time}}</text></view>
+      <view wx:if="{{result.castInfo.birthYear}}" class="out-row"><text class="ol">出生年</text><text class="ov">{{result.castInfo.birthYear}}年</text></view>
+    </view>
+
+    <!-- 二、卦象结果 -->
+    <view class="out-sec">
+      <text class="sec-h3">二、卦象结果</text>
+      <view class="hex-reveal">
+        <text class="huc">{{result.hexagram.hexUC}}</text>
+        <text class="hex-name">{{result.hexagram.hexName}}</text>
+        <text class="hex-sub">{{result.hexagram.upperSym}}{{result.hexagram.upperName}}上 · {{result.hexagram.lowerSym}}{{result.hexagram.lowerName}}下</text>
+        <text class="tag tag-{{result.hexagram.natTag}}">{{result.hexagram.natText}}</text>
+      </view>
+      <view class="out-row"><text class="ol">动爻</text><text class="ov">{{result.hexagram.movDesc}}</text></view>
+      <view class="out-row"><text class="ol">变卦</text><text class="ov">{{result.hexagram.changedDesc}}</text></view>
+      <view class="out-row"><text class="ol">互卦</text><text class="ov">{{result.hexagram.mutUC}} {{result.hexagram.mutName}}（内在潜在力量）</text></view>
+      <view class="out-row"><text class="ol">错卦</text><text class="ov">{{result.hexagram.revUC}} {{result.hexagram.revName}}（阴阳颠倒对立面）</text></view>
+      <view class="out-row"><text class="ol">综卦</text><text class="ov">{{result.hexagram.oppUC}} {{result.hexagram.oppName}}（换位旁观视角）</text></view>
+    </view>
+
+    <!-- 三、卦义总断 -->
+    <view class="out-sec">
+      <text class="sec-h3">三、卦义总断</text>
+      <view class="out-body">
+        <text class="out-p"><text class="strong">当前整体趋势：</text>{{result.overall.overallNote}}</text>
+        <text class="out-p"><text class="strong">事情成败倾向：</text>{{result.overall.tendency}}。</text>
+        <text class="out-p"><text class="strong">有利因素：</text>{{result.overall.favorable}}。</text>
+        <text class="out-p"><text class="strong">不利因素：</text>{{result.overall.unfavorable}}。</text>
+        <text class="out-p"><text class="strong">动爻与变化：</text>{{result.overall.movDesc}}{{result.overall.changeNote}}</text>
+      </view>
+    </view>
+
+    <!-- 四、分项详解 -->
+    <view class="out-sec">
+      <text class="sec-h3">四、分项详解</text>
+      <view class="out-body">
+        <view wx:for="{{result.detailItems}}" wx:key="label">
+          <text class="out-p {{item.primary ? '' : 'secondary'}}"><text class="{{item.primary ? 'strong' : 'em'}}">{{item.label}}：</text>{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 五、时间判断 -->
+    <view class="out-sec">
+      <text class="sec-h3">五、时间判断</text>
+      <view class="out-body">
+        <text class="out-p"><text class="strong">近期进展：</text>{{result.timeAdvice.progress}}</text>
+        <text class="out-p"><text class="strong">适合行动时段：</text>{{result.timeAdvice.goodTime}}。</text>
+        <text class="out-p"><text class="strong">需谨慎时段：</text>{{result.timeAdvice.cautionTime}}。</text>
+        <text class="out-p secondary">注：时间判断为区间趋势，非精确日期。</text>
+      </view>
+    </view>
+
+    <!-- 六、行动建议 -->
+    <view class="out-sec">
+      <text class="sec-h3">六、行动建议</text>
+      <view class="out-body">
+        <text wx:for="{{result.advices}}" wx:key="index" class="out-p">{{index + 1}}. {{item}}</text>
+      </view>
+    </view>
+
+    <!-- 七、结论 -->
+    <view class="out-sec">
+      <text class="sec-h3">七、结论</text>
+      <view class="out-body">
+        <text class="out-p">{{result.conclusion}}</text>
+      </view>
+    </view>
+  </block>
+</scroll-view>

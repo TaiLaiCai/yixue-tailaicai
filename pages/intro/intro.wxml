@@ -1,0 +1,41 @@
+<view class="intro" bindtap="onUnlock">
+  <!-- 星空背景 -->
+  <view class="stars">
+    <view wx:for="{{stars}}" wx:key="index"
+      class="star"
+      style="left:{{item.x}}%;top:{{item.y}}%;width:{{item.r}}rpx;height:{{item.r}}rpx;opacity:{{item.a}};animation-delay:{{item.d}}s">
+    </view>
+  </view>
+
+  <!-- 八卦环 -->
+  <view class="bagua-ring {{unlocking ? 'unlocking' : ''}}">
+    <!-- 光晕 -->
+    <view class="ring-halo"></view>
+    <view class="ring-glow"></view>
+    <view class="ring-track"></view>
+
+    <!-- 八卦节点 -->
+    <view wx:for="{{guaNodes}}" wx:key="index"
+      class="gua-node {{item.lit ? 'lit' : ''}}"
+      style="transform:translate({{item.x}}rpx,{{item.y}}rpx)">
+      <text class="gsym" style="color:{{item.color}}">{{item.sym}}</text>
+      <text class="gname">{{item.name}}</text>
+    </view>
+
+    <!-- 太极 -->
+    <view class="ring-center">
+      <text class="taichi {{unlocking ? 'taichi-burst' : ''}}">☯</text>
+    </view>
+  </view>
+
+  <!-- 文字 -->
+  <view class="intro-text">
+    <view class="intro-logo">
+      <text wx:for="{{logoChars}}" wx:key="index"
+        class="logo-ch {{item.phase}}"
+        style="transition-delay:{{index * 18}}ms">{{item.text}}</text>
+    </view>
+    <view class="intro-sub">紫微 · 易经 · 命运推演</view>
+    <view class="unlock-hint">── 点击进入 ──</view>
+  </view>
+</view>
