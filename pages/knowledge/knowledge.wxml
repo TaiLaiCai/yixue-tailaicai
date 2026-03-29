@@ -13,7 +13,7 @@
     <view class="hero">
       <text class="big-icon">☯</text>
       <text class="hero-title">易经核心思想</text>
-      <text class="hero-desc">《易经》的核心，不是占卜本身，而是对"变化"这件事的理解与应对。</text>
+      <text class="hero-desc">《易经》的核心，是对"变化"这件事的哲学理解与应对智慧。</text>
     </view>
 
     <view class="section">
@@ -30,7 +30,7 @@
         <view class="iitem"><text class="title">4. 中正</text><text class="desc">最好的状态通常不是极端，而是适度、平衡、守分寸。</text></view>
         <view class="iitem"><text class="title">5. 顺势</text><text class="desc">不是硬碰硬，而是顺着规律和局势调整行动。</text></view>
         <view class="iitem"><text class="title">6. 修养</text><text class="desc">外部局势变化的同时，心态、德行需要不断修正。</text></view>
-        <view class="iitem"><text class="title">7. 趋吉避凶</text><text class="desc">通过观察、预判和调整，减少风险，争取更好的结果。</text></view>
+        <view class="iitem"><text class="title">7. 观象知变</text><text class="desc">通过观察规律与变化趋势，提升认知与判断能力。</text></view>
       </view>
     </view>
 
@@ -60,7 +60,7 @@
 
     <view class="section">
       <text class="section-title">与紫微斗数的关联</text>
-      <text class="body-text">紫微斗数是易经思想的具体化应用：命盘呈现的是你所处的"时位"——你天生的性格底色（命宫）、此刻的运势阶段（大限流年），以及如何顺势而为。</text>
+      <text class="body-text">紫微斗数是易经思想在命理学中的具体应用：通过星盘呈现人与时间的关系——性格特征（命宫）、阶段特点（大限流年），体现古人对天人关系的哲学思考。</text>
       <text class="body-text gold-text">化忌不是坏运，是"执念"所在，对应易经的"坎卦"——习坎，有孚，维心亨。心正则险难可过。</text>
     </view>
   </block>

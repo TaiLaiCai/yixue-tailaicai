@@ -1,116 +1,80 @@
-const ziwei = require('../../utils/ziwei')
-const { TG, DZ, PN, MS, ZG, TFG } = ziwei
-const { SI, PT } = require('../../utils/constants')
-
 Page({
   data: {
-    year: 1990,
-    months: ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthIdx: 0,
-    days: Array.from({ length: 30 }, (_, i) => `${i + 1}日`),
-    dayIdx: 14,
-    hours: ['子 23-01', '丑 01-03', '寅 03-05', '卯 05-07', '辰 07-09', '巳 09-11', '午 11-13', '未 13-15', '申 15-17', '酉 17-19', '戌 19-21', '亥 21-23'],
-    hourIdx: 0,
-    genders: ['男', '女'],
-    genderIdx: 0,
-    showChart: false,
-    chartTitle: '',
-    topRow: [],
-    leftCells: [],
-    rightCells: [],
-    bottomRow: [],
-    centerInfo: {},
-    interp: {},
-    showPopup: false,
-    popup: {}
-  },
+    activeTab: 'gong',
 
-  _result: null,
+    gongData: [
+      { num: '一', name: '命宫', tag: '本命', desc: '命宫是一生人格底色与格局所在，代表个人的性格气质、能力禀赋与人生主基调。主星定基调，三方四正辅助判断。', key: '自我、性格、格局' },
+      { num: '二', name: '兄弟宫', tag: '手足', desc: '看手足情分与相处模式，也代表平辈朋友关系，以及个人财库来源之一——手边现金流的状态。', key: '手足、平辈、现金' },
+      { num: '三', name: '夫妻宫', tag: '婚姻', desc: '看感情与婚姻状态，代表配偶的特质与缘分，也代表一对一的合伙关系。学习斗数须结合命宫一同参看。', key: '伴侣、婚姻、合伙' },
+      { num: '四', name: '子女宫', tag: '子嗣', desc: '看子嗣缘分与教育方式，也代表下属、部属的质量，以及自我创造力与作品的表现。', key: '子嗣、部属、创造力' },
+      { num: '五', name: '财帛宫', tag: '财运', desc: '代表赚钱的方式与财运起伏，是"来财"的象征，侧重收入来源与财富流动，并非储蓄能力。', key: '收入、财路、财运' },
+      { num: '六', name: '疾厄宫', tag: '健康', desc: '看身体健康与体质特点，也代表处事时的抗压能力与危机应对方式，传统斗数极重视此宫。', key: '健康、体质、抗压' },
+      { num: '七', name: '迁移宫', tag: '出外', desc: '看出外运势与异地发展机遇，代表离开家乡后的人际际遇，也代表一个人在外人面前呈现的形象。', key: '出行、异地、外在形象' },
+      { num: '八', name: '交友宫', tag: '社交', desc: '看朋友、同事与合作伙伴的质量，代表人际关系的整体状态，以及下属与员工的忠诚度。', key: '朋友、同事、人脉' },
+      { num: '九', name: '官禄宫', tag: '事业', desc: '看事业发展格局与职场特征，是人生发展的核心宫位之一，代表一个人在社会上的功名成就方向。', key: '事业、职场、成就' },
+      { num: '十', name: '田宅宫', tag: '不动产', desc: '看不动产与家庭居住环境，也代表内心的安全感来源，以及祖业基础与家庭氛围的整体状态。', key: '房产、家庭、安全感' },
+      { num: '十一', name: '福德宫', tag: '精神', desc: '看内心享受、兴趣偏好与精神生活质量，代表一个人内在的幸福感与心灵满足程度。', key: '享受、精神、兴趣' },
+      { num: '十二', name: '父母宫', tag: '长辈', desc: '看与长辈、上司的关系，也代表文书印信的吉凶，以及个人与权威机构的互动方式。', key: '长辈、上司、文书' }
+    ],
 
-  onYearChange(e) { this.setData({ year: parseInt(e.detail.value) || 1990 }) },
-  onMonthChange(e) { this.setData({ monthIdx: parseInt(e.detail.value) }) },
-  onDayChange(e) { this.setData({ dayIdx: parseInt(e.detail.value) }) },
-  onHourChange(e) { this.setData({ hourIdx: parseInt(e.detail.value) }) },
-  onGenderChange(e) { this.setData({ genderIdx: parseInt(e.detail.value) }) },
+    zwStars: [
+      { name: '紫微', alias: '帝星', wx: '土', wxClass: 'tu', gua: '☰', desc: '领导气质天成，自尊心强，贵气显露，善于统御，天生有架势，不甘居人下，易有贵人相助。', guaNote: '乾卦 · 天行健，君子以自强不息。紫微坐命，格局如天，宜广纳百川，勿独断专行。' },
+      { name: '天机', alias: '益寿星', wx: '木', wxClass: 'mu', gua: '☴', desc: '聪明机智，思维活跃，善谋略与分析，但多变不定。天机动则灵，静则滞，要在动中求变。', guaNote: '巽卦 · 随风渗透，顺势而入。天机命者善谋，审时度势，方能以柔克刚。' },
+      { name: '太阳', alias: '官禄主', wx: '火', wxClass: 'huo', gua: '☲', desc: '付出型人格，光明磊落，名声重于财。男命旺，女命主夫星。宜从事公众、教育、政治类领域。', guaNote: '离卦 · 明两作，大人以继明照四方。太阳命者如火，付出是天性，光明是使命。' },
+      { name: '武曲', alias: '财星', wx: '金', wxClass: 'jin', gua: '☱', desc: '意志坚定，行动力强，重实干，有财运，但性格刚克，感情略显孤独。宜从事金融、军警、实业。', guaNote: '兑卦 · 君子以朋友讲习。武曲命者重实干，刚中有柔，财聚财散皆自然。' },
+      { name: '天同', alias: '福星', wx: '水', wxClass: 'shui', gua: '☵', desc: '随和享乐，内心平和，喜安逸，有口福，善于享受生活，但缺乏进取心，须注意过于被动。', guaNote: '坎卦 · 习坎，有孚，维心亨。天同命者随遇而安，水善利万物而不争。' },
+      { name: '廉贞', alias: '囚星才艺星', wx: '火', wxClass: 'huo', gua: '☳', desc: '多才多艺，性格刚烈，感情复杂，是非较多。化禄可化险为夷，适合艺术、军警、政治领域。', guaNote: '震卦 · 洊雷，君子以恐惧修省。廉贞命者刚烈多变，震动之后当反躬自省。' }
+    ],
 
-  onGenerate() {
-    const yr = this.data.year
-    const mo = this.data.monthIdx + 1
-    const dy = this.data.dayIdx + 1
-    const hr = this.data.hourIdx
-    const gd = this.data.genderIdx === 0 ? 'm' : 'f'
+    tfStars: [
+      { name: '天府', alias: '财库', wx: '土', wxClass: 'tu', gua: '☷', desc: '稳重保守，积财能力强，有地位，处事圆融，主富不主贵。擅长守成、理财，适合管理职位。', guaNote: '坤卦 · 地势坤，君子以厚德载物。天府命者如大地，稳固包容，积财蓄德。' },
+      { name: '太阴', alias: '富星田宅主', wx: '水', wxClass: 'shui', gua: '☵', desc: '柔顺内敛，富有同情心，女命尤佳，财从暗处积累。擅长幕后运作，适合文艺、教育、服务业。', guaNote: '坎卦 · 水善利万物而不争。太阴命者柔顺内敛，财从暗处积，德从忍中来。' },
+      { name: '贪狼', alias: '桃花星变化星', wx: '木', wxClass: 'mu', gua: '☶', desc: '多才多艺，欲望强烈，社交活跃，善变，财来财去。适合销售、娱乐、公关等需要人际能力的领域。', guaNote: '艮卦 · 兼山，君子以思不出其位。贪狼命者欲望旺，知止而后有定。' },
+      { name: '巨门', alias: '是非星', wx: '水', wxClass: 'shui', gua: '☱', desc: '口才极佳，善思辨，疑心较重，宜从事靠语言表达吃饭的职业，如教师、律师、演讲、咨询。', guaNote: '兑卦 · 说以先民，民忘其劳。巨门命者善言，宜以正道出口，避免口舌是非。' },
+      { name: '天相', alias: '印星', wx: '水', wxClass: 'shui', gua: '☴', desc: '重情义，服务精神强，宜做幕僚辅佐，配合力强。格局须借助三方主星，不宜单独论断。', guaNote: '巽卦 · 重巽以申命，刚巽乎中正而志行。天相命者宜辅佐，顺势配合方得其用。' },
+      { name: '天梁', alias: '荫星', wx: '土', wxClass: 'tu', gua: '☶', desc: '清高正直，有贵人缘，善救助他人，主长寿。适合医疗、法律、宗教、公益等领域。', guaNote: '艮卦 · 艮其背，不获其身。天梁命者厚重清高，止于所当止，乃真智慧。' },
+      { name: '七杀', alias: '将星', wx: '金', wxClass: 'jin', gua: '☰', desc: '魄力十足，行动果断，开创力强，但克己克人，孤独感重。适合创业、军警、外科、竞技等领域。', guaNote: '乾卦 · 亢龙有悔，盈不可久。七杀命者勇往直前，须知物极必反之道。' },
+      { name: '破军', alias: '耗星开创星', wx: '水', wxClass: 'shui', gua: '☵', desc: '破旧立新，勇于改变，创业型人格，感情多变。适合改革、创新、科研、军事等领域。', guaNote: '坎卦 · 坎坎险难，行险而不失其信。破军命者勇于破旧，需以诚信为舵。' }
+    ],
 
-    if (!yr || yr < 1900 || yr > 2030) {
-      wx.showToast({ title: '请输入有效出生年', icon: 'none' })
-      return
-    }
-
-    const result = ziwei.generate(yr, mo, dy, hr, gd)
-    this._result = result
-    const interp = ziwei.generateInterp(result)
-
-    const { cells, mp, sp, yg, yz, j, fwd } = result
-
-    // 准备每个cell的显示数据
-    const prepareCell = (c) => ({
-      ...c,
-      piName: PN[c.pi],
-      tgDz: `${TG[c.pgn]}${DZ[c.p]}`,
-      starClass: c.msi.map(i => ZG.includes(i) ? 'zw' : TFG.includes(i) ? 'tf' : '')
-    })
-
-    const allCells = cells.map(prepareCell)
-
-    // 命盘布局
-    const topRow = [5, 6, 7, 8].map(i => allCells[i])
-    const leftCells = [4, 3].map(i => allCells[i])
-    const rightCells = [9, 10].map(i => allCells[i])
-    const bottomRow = [2, 1, 0, 11].map(i => allCells[i])
-
-    const juNames = { 2: '水二局', 3: '木三局', 4: '金四局', 5: '土五局', 6: '火六局' }
-    const centerInfo = {
-      title: `${TG[yg]}${DZ[yz]}年命`,
-      birthYear: `${TG[yg]}${DZ[yz]}(${yr})`,
-      mingGong: `${TG[allCells[mp].pgn]}${DZ[mp]}`,
-      shenGong: `${DZ[sp]}宫`,
-      daxian: `${fwd ? '顺' : '逆'}布 ${j}岁起`,
-      j,
-      juName: juNames[j]
-    }
-
-    this.setData({
-      showChart: true,
-      chartTitle: `${yr}年 农历${mo}月${dy}日 ${DZ[hr]}时 · ${gd === 'm' ? '男' : '女'}命`,
-      topRow, leftCells, rightCells, bottomRow, centerInfo,
-      interp
-    })
-  },
-
-  onCellTap(e) {
-    const idx = parseInt(e.currentTarget.dataset.idx)
-    if (!this._result) return
-    const c = this._result.cells[idx]
-    const pn = PN[c.pi]
-
-    const starDescs = c.msi.map(i => ({ name: MS[i], desc: SI[MS[i]] || '' }))
-
-    this.setData({
-      showPopup: true,
-      popup: {
-        title: `${pn} · ${TG[c.pgn]}${DZ[c.p]}`,
-        dxs: c.dxs,
-        msn: c.msn,
-        msnText: c.msn.join('、'),
-        starDescs,
-        hH: c.hH,
-        axH: c.axH,
-        axText: c.axH.map(a => a.n).join('、'),
-        note: PT[pn] || ''
+    sihuaData: [
+      {
+        name: '化禄', sym: '禄', cls: 'hl', brief: '流动、收益、顺遂',
+        desc: '化禄代表该星所主事务呈现顺遂、扩展、流动的状态。落入哪个宫位，该宫的事务往往较为顺利，有利益流入。',
+        quote: '禄不主富，主流动——财来财往，缘来缘去，皆是禄的象。'
+      },
+      {
+        name: '化权', sym: '权', cls: 'hq', brief: '掌控、权威、主导',
+        desc: '化权代表该星增强了主导性与控制欲，落入的宫位事务会有强烈的主动掌控倾向，有权力象，也有强势压迫。',
+        quote: '权星入命，不甘被动；权星入财，主动创富；权星入疾，须防强撑。'
+      },
+      {
+        name: '化科', sym: '科', cls: 'hk', brief: '名声、文书、贵人',
+        desc: '化科代表名声、文书印信与贵人相助，落入的宫位事务往往有名誉加分，适合考试、出版、学术、公众曝光。',
+        quote: '科星主名而不主财，得科者声誉在外，文章传世，贵人提携。'
+      },
+      {
+        name: '化忌', sym: '忌', cls: 'hj', brief: '执念、阻碍、内化',
+        desc: '化忌代表该星主导的事务出现执念、阻碍或内化的倾向。忌不等于"坏"，更像一种提醒：此处需谨慎，宜内省。',
+        quote: '忌星非凶，是执念所在。化忌入命，执于自我；入财，执于金钱；入夫妻，执于感情。心正则险难可过。'
       }
-    })
+    ],
+
+    sihuaTable: [
+      { gan: '甲', lu: '廉贞', quan: '破军', ke: '武曲', ji: '太阳' },
+      { gan: '乙', lu: '天机', quan: '天梁', ke: '紫微', ji: '太阴' },
+      { gan: '丙', lu: '天同', quan: '天机', ke: '文昌', ji: '廉贞' },
+      { gan: '丁', lu: '太阴', quan: '天同', ke: '天机', ji: '巨门' },
+      { gan: '戊', lu: '贪狼', quan: '太阴', ke: '右弼', ji: '天机' },
+      { gan: '己', lu: '武曲', quan: '贪狼', ke: '天梁', ji: '文曲' },
+      { gan: '庚', lu: '太阳', quan: '武曲', ke: '太阴', ji: '天同' },
+      { gan: '辛', lu: '巨门', quan: '太阳', ke: '文曲', ji: '文昌' },
+      { gan: '壬', lu: '天梁', quan: '紫微', ke: '左辅', ji: '武曲' },
+      { gan: '癸', lu: '破军', quan: '巨门', ke: '太阴', ji: '贪狼' }
+    ]
   },
 
-  closePopup() {
-    this.setData({ showPopup: false })
+  switchTab(e) {
+    this.setData({ activeTab: e.currentTarget.dataset.tab })
   }
 })

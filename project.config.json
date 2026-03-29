@@ -47,7 +47,7 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.15.1",
+  "libVersion": "3.15.0",
   "appid": "wxe04efc2bd532a51a",
   "projectname": "yixue-tailaicai",
   "condition": {},

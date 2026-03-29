@@ -35,7 +35,7 @@
         class="logo-ch {{item.phase}}"
         style="transition-delay:{{index * 18}}ms">{{item.text}}</text>
     </view>
-    <view class="intro-sub">紫微 · 易经 · 命运推演</view>
+    <view class="intro-sub">紫微 · 易经 · 古法研习</view>
     <view class="unlock-hint">── 点击进入 ──</view>
   </view>
 </view>

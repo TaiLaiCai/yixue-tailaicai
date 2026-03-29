@@ -49,7 +49,7 @@ Page({
 
   goStep2() {
     if (!this.data.question.trim()) {
-      wx.showToast({ title: '请输入您想占问的问题', icon: 'none' })
+      wx.showToast({ title: '请输入研习主题', icon: 'none' })
       return
     }
     this._lines = []

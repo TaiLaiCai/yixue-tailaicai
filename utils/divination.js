@@ -185,7 +185,7 @@ function generateInterp(calcResult, question, qtype, method, birthYear) {
   const changedUpper = TDATA[TNAMES[cui]]
   const changedLower = TDATA[TNAMES[cli]]
 
-  const methodMap = { coin: '铜钱起卦（三枚铜钱法）', time: '时间起卦（梅花易数时间法）', number: '数字起卦（梅花易数数字法）' }
+  const methodMap = { coin: '铜钱排卦（三枚铜钱法）', time: '时间排卦（梅花易数时间法）', number: '数字排卦（梅花易数数字法）' }
   const hexUC = String.fromCodePoint(0x4DC0 + hexNum - 1)
   const changedUC = changedHexNum ? String.fromCodePoint(0x4DC0 + changedHexNum - 1) : ''
   const mutUC = mutHexNum ? String.fromCodePoint(0x4DC0 + mutHexNum - 1) : ''

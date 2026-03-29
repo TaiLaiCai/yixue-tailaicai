@@ -23,12 +23,28 @@ Page({
   },
 
   loadCalligraphyFont() {
+    // 字体 CDN 列表：优先国内可访问源，依次降级
+    const fontSources = [
+      'https://cdn.jsdelivr.net/npm/@fontsource/ma-shan-zheng@5.0.4/files/ma-shan-zheng-chinese-simplified-400-normal.woff2',
+      'https://cdn.jsdelivr.net/npm/@fontsource/zhi-mang-xing@5.0.4/files/zhi-mang-xing-chinese-simplified-400-normal.woff2'
+    ]
+    this._tryLoadFont(fontSources, 0)
+  },
+
+  _tryLoadFont(sources, idx) {
+    if (idx >= sources.length) {
+      console.log('All font sources failed, using system fallback')
+      return
+    }
     wx.loadFontFace({
       family: 'MaShanZheng',
-      source: 'url("https://fonts.gstatic.com/s/mashanzheng/v10/NaPecZTRCLxvvo41b4gvzkXaRMTpDZk.woff2")',
+      source: `url("${sources[idx]}")`,
       scopes: ['webview', 'native'],
-      success: () => console.log('Font loaded'),
-      fail: () => console.log('Font fallback to system')
+      success: () => console.log('Font loaded from source', idx),
+      fail: () => {
+        console.log('Font source', idx, 'failed, trying next')
+        this._tryLoadFont(sources, idx + 1)
+      }
     })
   },
 
